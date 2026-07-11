@@ -56,11 +56,11 @@ export default function ActivityTimeline({ history = [], loading, error }) {
       className="card activity-timeline-card" 
       id="activity-timeline-panel" 
       tabIndex="0" 
-      aria-label="Activity Log"
+      aria-labelledby="activity-log-title"
     >
       <div className="card__header">
-        <h2 className="card__title">
-          <span className="card__title-icon">📜</span>
+        <h2 className="card__title" id="activity-log-title">
+          <span className="card__title-icon" aria-hidden="true">📜</span>
           Activity Log
         </h2>
       </div>
@@ -98,7 +98,6 @@ export default function ActivityTimeline({ history = [], loading, error }) {
                     }
                   }}
                   aria-expanded={isExpanded}
-                  aria-label={`Log entry at ${timeStr}: ${parsed.message}.`}
                 >
                   <div className="timeline-track">
                     <div className={`timeline-dot timeline-dot--${dotClass}`} aria-hidden="true" />
