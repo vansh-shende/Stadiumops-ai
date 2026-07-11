@@ -1,11 +1,4 @@
-/**
- * =========================================================
- *  StadiumOps AI — Dashboard Utility Helpers
- * =========================================================
- *
- *  Pure functions for data classification and formatting.
- *  Shared across multiple components.
- */
+import { THRESHOLDS } from "../constants/dashboardConstants";
 
 /**
  * Returns the severity tier for crowd density percentage.
@@ -13,8 +6,8 @@
  * @returns {"low"|"medium"|"high"}
  */
 export function densityTier(value) {
-  if (value < 50) return "low";
-  if (value < 80) return "medium";
+  if (value < THRESHOLDS.DENSITY.LOW) return "low";
+  if (value < THRESHOLDS.DENSITY.MEDIUM) return "medium";
   return "high";
 }
 
@@ -24,8 +17,8 @@ export function densityTier(value) {
  * @returns {"low"|"medium"|"high"}
  */
 export function waitTier(mins) {
-  if (mins <= 5) return "low";
-  if (mins <= 15) return "medium";
+  if (mins <= THRESHOLDS.WAIT.LOW) return "low";
+  if (mins <= THRESHOLDS.WAIT.MEDIUM) return "medium";
   return "high";
 }
 
@@ -35,8 +28,8 @@ export function waitTier(mins) {
  * @returns {"low"|"medium"|"ok"}
  */
 export function qtyTier(qty) {
-  if (qty < 30) return "low";
-  if (qty < 80) return "medium";
+  if (qty < THRESHOLDS.INVENTORY.LOW) return "low";
+  if (qty < THRESHOLDS.INVENTORY.MEDIUM) return "medium";
   return "ok";
 }
 
@@ -104,8 +97,8 @@ export function computeKPIs(data) {
       ? Math.round(gates.reduce((sum, g) => sum + g.wait_time, 0) / gates.length)
       : 0;
 
-  // 3. Inventory Health — % of items above the low-stock threshold (30)
-  const healthyItems = inventory.filter((i) => i.quantity >= 30).length;
+  // 3. Inventory Health — % of items above the low-stock threshold
+  const healthyItems = inventory.filter((i) => i.quantity >= THRESHOLDS.INVENTORY.LOW).length;
   const inventoryHealth =
     inventory.length > 0 ? Math.round((healthyItems / inventory.length) * 100) : 100;
 
@@ -119,7 +112,7 @@ export function computeKPIs(data) {
       label: "Crowd Density",
       value: `${avgDensity}%`,
       icon: "👥",
-      variant: avgDensity >= 80 ? "danger" : avgDensity >= 50 ? "warning" : "success",
+      variant: avgDensity >= THRESHOLDS.DENSITY.MEDIUM ? "danger" : avgDensity >= THRESHOLDS.DENSITY.LOW ? "warning" : "success",
       subtext: `across ${gates.length} gates`,
     },
     {
@@ -127,7 +120,7 @@ export function computeKPIs(data) {
       label: "Avg Wait Time",
       value: `${avgWait} min`,
       icon: "⏱",
-      variant: avgWait > 15 ? "danger" : avgWait > 5 ? "warning" : "success",
+      variant: avgWait > THRESHOLDS.WAIT.MEDIUM ? "danger" : avgWait > THRESHOLDS.WAIT.LOW ? "warning" : "success",
       subtext: `across ${gates.length} gates`,
     },
     {
@@ -135,7 +128,7 @@ export function computeKPIs(data) {
       label: "Inventory Health",
       value: `${inventoryHealth}%`,
       icon: "📦",
-      variant: inventoryHealth >= 80 ? "success" : inventoryHealth >= 50 ? "warning" : "danger",
+      variant: inventoryHealth >= THRESHOLDS.INVENTORY.MEDIUM ? "success" : inventoryHealth >= THRESHOLDS.INVENTORY.LOW ? "warning" : "danger",
       subtext: `${healthyItems}/${inventory.length} items stocked`,
     },
     {

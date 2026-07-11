@@ -1,6 +1,10 @@
 import { useState, memo } from "react";
-import { timeAgo } from "../utils/helpers";
+import { timeAgo } from "../../../utils/helpers";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import Card from "../../shared/ui/Card";
+import Button from "../../shared/ui/Button";
+
+const DONUT_COLORS = ["#10b981", "#ef4444"];
 
 export default memo(function StaffPanel({ staff = [], loading, error, onRetry }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -33,27 +37,20 @@ export default memo(function StaffPanel({ staff = [], loading, error, onRetry })
     { name: "Available", value: availableStaff },
     { name: "Busy", value: busyStaff }
   ];
-  const COLORS = ["#10b981", "#ef4444"];
 
   return (
-    <article 
-      className="card" 
-      id="staff-panel" 
-      tabIndex="0" 
-      aria-label="Staff Logistics Summary"
-    >
-      <div className="card__header">
-        <h2 className="card__title">
-          <span className="card__title-icon">🧑‍💼</span>
-          Staff Logistics Summary
-        </h2>
-        {!loading && !error && hasData && (
+    <Card
+      title="Staff Logistics Summary"
+      icon="🧑‍💼"
+      headerRight={
+        !loading && !error && hasData && (
           <span className="card__count" id="staff-count">
             {totalStaff} active
           </span>
-        )}
-      </div>
-      
+        )
+      }
+      id="staff-panel"
+    >
       <div className="card__body">
         {loading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -68,13 +65,14 @@ export default memo(function StaffPanel({ staff = [], loading, error, onRetry })
               <p className="panel-error-card__message">{error}</p>
             </div>
             {onRetry && (
-              <button 
-                className="btn btn--secondary btn--xs" 
+              <Button 
+                variant="secondary" 
+                size="sm" 
                 onClick={onRetry}
-                aria-label="Retry loading staff"
+                ariaLabel="Retry loading staff"
               >
                 Retry
-              </button>
+              </Button>
             )}
           </div>
         ) : !hasData ? (
@@ -132,7 +130,7 @@ export default memo(function StaffPanel({ staff = [], loading, error, onRetry })
                         dataKey="value"
                       >
                         {donutData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
                         ))}
                       </Pie>
                     </PieChart>
@@ -183,17 +181,18 @@ export default memo(function StaffPanel({ staff = [], loading, error, onRetry })
 
             {/* Toggle Button */}
             <div className="summary-toggle-footer">
-              <button 
-                className="btn btn--secondary btn--sm" 
+              <Button 
+                variant="secondary" 
+                size="sm" 
                 onClick={() => setShowDetails(!showDetails)}
-                aria-label={showDetails ? "Hide Details (Hide staff members)" : "View Details (View raw staff list)"}
+                ariaLabel={showDetails ? "Hide Details" : "View Details"}
               >
                 {showDetails ? "Hide Details" : "View Details"}
-              </button>
+              </Button>
             </div>
           </div>
         )}
       </div>
-    </article>
+    </Card>
   );
 });

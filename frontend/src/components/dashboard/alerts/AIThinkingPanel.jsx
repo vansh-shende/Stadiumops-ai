@@ -1,23 +1,11 @@
-/**
- * =========================================================
- *  StadiumOps AI — AI Thinking Panel (Feature 1)
- * =========================================================
- *
- *  Animated AI Commander widget that replaces the static card.
- *  Shows real-time AI state transitions with smooth animations:
- *    MONITORING → ANALYZING → PREDICTING → DECISION_READY → DEPLOYING
- *
- *  Features:
- *    - Scanning animation with rotating ring
- *    - Typing animation for AI responses
- *    - Confidence ring (SVG arc)
- *    - Next scan countdown
- *    - Estimated impact
- */
+import { useState, useEffect, useRef, memo } from "react";
+import { classifyAlert, parseAlert } from "../../../utils/helpers";
+import { useSimulation } from "../../../context/SimulationContext";
+import Card from "../../shared/ui/Card";
+import Badge from "../../shared/ui/Badge";
+import Button from "../../shared/ui/Button";
+import StatusChip from "../../shared/ui/StatusChip";
 
-import { useState, useEffect, useRef, useCallback, memo } from "react";
-import { classifyAlert, parseAlert } from "../utils/helpers";
-import { useSimulation } from "../context/SimulationContext";
 const AI_STATES = [
   { key: "MONITORING", label: "Monitoring", color: "var(--color-success)", icon: "◉" },
   { key: "ANALYZING", label: "Analyzing", color: "var(--color-warning)", icon: "◎" },
@@ -25,6 +13,7 @@ const AI_STATES = [
   { key: "GENERATING_PLAN", label: "Generating Plan", color: "var(--color-info)", icon: "◆" },
   { key: "DEPLOYING", label: "Deploying", color: "var(--color-danger)", icon: "▶" },
 ];
+
 function useTypingAnimation(text, speed = 18) {
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -157,40 +146,28 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
   ];
 
   return (
-    <article
-      className={`card ai-thinking-panel ${isSimulating ? "ai-thinking-panel--simulating" : ""}`}
-      id="ai-thinking-panel"
-      tabIndex="0"
-      aria-label="AI Commander Thinking Panel"
-    >
-      {/* Header */}
-      <div className="card__header ai-thinking-header">
-        <div className="ai-thinking-title-group">
-          <div className="ai-brain-icon" aria-hidden="true">
-            <svg viewBox="0 0 100 100" className="ai-scan-ring">
-              <circle cx="50" cy="50" r="42" className="ai-scan-ring__track" />
-              <circle
-                cx="50" cy="50" r="42"
-                className="ai-scan-ring__sweep"
-                style={{ transform: `rotate(${scanAngle}deg)`, transformOrigin: "50% 50%" }}
-              />
-              <circle cx="50" cy="50" r="28" className="ai-scan-ring__inner" />
-            </svg>
-            <span className="ai-brain-icon__emoji">🧠</span>
-          </div>
-          <div>
-            <h2 className="card__title">AI Tactical Commander</h2>
-            <span className="ai-engine-label">Gemini Engine v2.0</span>
-          </div>
+    <Card
+      title="AI Tactical Commander"
+      icon={
+        <div className="ai-brain-icon" aria-hidden="true" style={{ display: "inline-block", verticalAlign: "middle" }}>
+          <svg viewBox="0 0 100 100" className="ai-scan-ring" style={{ width: "24px", height: "24px" }}>
+            <circle cx="50" cy="50" r="42" className="ai-scan-ring__track" />
+            <circle
+              cx="50" cy="50" r="42"
+              className="ai-scan-ring__sweep"
+              style={{ transform: `rotate(${scanAngle}deg)`, transformOrigin: "50% 50%" }}
+            />
+            <circle cx="50" cy="50" r="28" className="ai-scan-ring__inner" />
+          </svg>
+          <span className="ai-brain-icon__emoji" style={{ position: "absolute", left: "6px", top: "2px", fontSize: "12px" }}>🧠</span>
         </div>
-
+      }
+      headerRight={
         <div className="ai-thinking-header-badges">
-          {/* AI State Badge */}
           <div className="ai-state-badge" style={{ "--state-color": currentState.color }}>
             <span className="ai-state-badge__dot" />
             <span className="ai-state-badge__label">{currentState.label}</span>
           </div>
-          {/* Countdown */}
           {!loading && !error && (
             <div className="scan-countdown-badge" aria-label={`Next scan in ${countdown} seconds`}>
               <svg viewBox="0 0 24 24" width="12" height="12" className="countdown-icon">
@@ -207,9 +184,10 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
             </div>
           )}
         </div>
-      </div>
-
-      {/* Body */}
+      }
+      className={`ai-thinking-panel ${isSimulating ? "ai-thinking-panel--simulating" : ""}`}
+      id="ai-thinking-panel"
+    >
       <div className="card__body ai-thinking-body">
         {loading ? (
           <div className="ai-loading-state">
@@ -224,7 +202,7 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
               <p className="panel-error-card__message">{error}</p>
             </div>
             {onRetry && (
-              <button className="btn btn--secondary btn--xs" onClick={onRetry}>Retry</button>
+              <Button variant="secondary" size="sm" onClick={onRetry}>Retry</Button>
             )}
           </div>
         ) : (
@@ -287,7 +265,7 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
             {/* Directive Display with Typing */}
             <div className={`ai-directive-display ai-directive-display--${level}`}>
               <div className="ai-directive-header">
-                <span className={`badge badge--${level}`}>{parsed ? parsed.tag : "NOMINAL"}</span>
+                <Badge variant={level}>{parsed ? parsed.tag : "NOMINAL"}</Badge>
                 <span className="ai-directive-time">
                   {lastUpdated ? lastUpdated.toLocaleTimeString("en-US", { hour12: false }) : ""}
                 </span>
@@ -300,13 +278,14 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
 
             {/* Actions */}
             <div className="ai-commander-actions">
-              <button
-                className="btn btn--primary btn--sm"
+              <Button
+                variant="primary"
+                size="sm"
                 onClick={() => setShowReasonModal(true)}
-                aria-label="View Reasoning details"
+                ariaLabel="View Reasoning details"
               >
                 View Reasoning
-              </button>
+              </Button>
             </div>
           </>
         )}
@@ -335,7 +314,7 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
                   <div key={idx} className="logic-rule-item">
                     <div className="logic-rule-header">
                       <span className="logic-rule-name">{rule.rule}</span>
-                      <span className={`status-dot status-dot--${rule.level === "warning" ? "warning" : rule.level === "danger" ? "danger" : "success"}`} />
+                      <StatusChip variant={rule.level === "warning" ? "warning" : rule.level === "danger" ? "danger" : "success"} />
                     </div>
                     <p className="logic-rule-desc">{rule.result}</p>
                   </div>
@@ -348,6 +327,6 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
           </div>
         </div>
       )}
-    </article>
+    </Card>
   );
 });

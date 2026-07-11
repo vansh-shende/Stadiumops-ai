@@ -1,14 +1,18 @@
 import { useState, memo } from "react";
-import { qtyTier, timeAgo } from "../utils/helpers";
+import { qtyTier, timeAgo } from "../../../utils/helpers";
+import { THRESHOLDS } from "../../../constants/dashboardConstants";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import Card from "../../shared/ui/Card";
+import Button from "../../shared/ui/Button";
+
+const DONUT_COLORS = ["#10b981", "#ef4444"];
 
 export default memo(function InventoryPanel({ inventory = [], loading, error, onRetry }) {
   const [showDetails, setShowDetails] = useState(false);
   const hasData = inventory && inventory.length > 0;
 
-  // Inventory thresholds
-  const lowStockThreshold = 30;
-  const healthyStockThreshold = 80;
+  const lowStockThreshold = THRESHOLDS.INVENTORY.LOW;
+  const healthyStockThreshold = THRESHOLDS.INVENTORY.MEDIUM;
 
   const criticalItems = inventory.filter(item => item.quantity < lowStockThreshold);
   const healthyItemsCount = inventory.filter(item => item.quantity >= healthyStockThreshold).length;
@@ -23,27 +27,20 @@ export default memo(function InventoryPanel({ inventory = [], loading, error, on
     { name: "Healthy", value: totalItems - criticalItems.length },
     { name: "Critical", value: criticalItems.length }
   ];
-  const COLORS = ["#10b981", "#ef4444"];
 
   return (
-    <article 
-      className="card" 
-      id="inventory-panel" 
-      tabIndex="0" 
-      aria-label="Concession Inventory Summary"
-    >
-      <div className="card__header">
-        <h2 className="card__title">
-          <span className="card__title-icon">📦</span>
-          Concession Inventory Summary
-        </h2>
-        {!loading && !error && hasData && (
+    <Card
+      title="Concession Inventory Summary"
+      icon="📦"
+      headerRight={
+        !loading && !error && hasData && (
           <span className="card__count" id="inventory-count">
             {totalItems} stands
           </span>
-        )}
-      </div>
-      
+        )
+      }
+      id="inventory-panel"
+    >
       <div className="card__body">
         {loading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -58,13 +55,14 @@ export default memo(function InventoryPanel({ inventory = [], loading, error, on
               <p className="panel-error-card__message">{error}</p>
             </div>
             {onRetry && (
-              <button 
-                className="btn btn--secondary btn--xs" 
+              <Button 
+                variant="secondary" 
+                size="sm" 
                 onClick={onRetry}
-                aria-label="Retry loading inventory"
+                ariaLabel="Retry loading inventory"
               >
                 Retry
-              </button>
+              </Button>
             )}
           </div>
         ) : !hasData ? (
@@ -122,7 +120,7 @@ export default memo(function InventoryPanel({ inventory = [], loading, error, on
                         dataKey="value"
                       >
                         {donutData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
                         ))}
                       </Pie>
                     </PieChart>
@@ -164,17 +162,18 @@ export default memo(function InventoryPanel({ inventory = [], loading, error, on
 
             {/* Toggle Button */}
             <div className="summary-toggle-footer">
-              <button 
-                className="btn btn--secondary btn--sm" 
+              <Button 
+                variant="secondary" 
+                size="sm" 
                 onClick={() => setShowDetails(!showDetails)}
-                aria-label={showDetails ? "Hide Details (Hide concession details)" : "View Details (View raw concession details)"}
+                ariaLabel={showDetails ? "Hide Details" : "View Details"}
               >
                 {showDetails ? "Hide Details" : "View Details"}
-              </button>
+              </Button>
             </div>
           </div>
         )}
       </div>
-    </article>
+    </Card>
   );
 });

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { classifyAlert, parseAlert } from "../utils/helpers";
+import { classifyAlert, parseAlert } from "../../../utils/helpers";
+import Card from "../../shared/ui/Card";
+import Badge from "../../shared/ui/Badge";
 
 export default React.memo(function ActivityTimeline({ history = [], loading, error }) {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   if (loading) {
     return (
-      <article className="card activity-timeline-card skeleton" id="activity-timeline-panel">
+      <Card className="activity-timeline-card skeleton" id="activity-timeline-panel">
         <div className="skeleton-box" style={{ width: "160px", height: "14px", marginBottom: "16px" }}></div>
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           {[...Array(4)].map((_, i) => (
@@ -19,19 +21,18 @@ export default React.memo(function ActivityTimeline({ history = [], loading, err
             </div>
           ))}
         </div>
-      </article>
+      </Card>
     );
   }
 
   if (error) {
     return (
-      <article className="card activity-timeline-card" id="activity-timeline-panel" tabIndex="0" aria-label="Activity Log Error">
-        <div className="card__header">
-          <h2 className="card__title">
-            <span className="card__title-icon">📜</span>
-            Log
-          </h2>
-        </div>
+      <Card
+        title="Log"
+        icon="📜"
+        className="activity-timeline-card"
+        id="activity-timeline-panel"
+      >
         <div className="card__body">
           <div className="panel-error-card">
             <span className="panel-error-card__icon" aria-hidden="true">⚠️</span>
@@ -41,7 +42,7 @@ export default React.memo(function ActivityTimeline({ history = [], loading, err
             </div>
           </div>
         </div>
-      </article>
+      </Card>
     );
   }
 
@@ -52,19 +53,12 @@ export default React.memo(function ActivityTimeline({ history = [], loading, err
   };
 
   return (
-    <article 
-      className="card activity-timeline-card" 
-      id="activity-timeline-panel" 
-      tabIndex="0" 
-      aria-labelledby="activity-log-title"
+    <Card
+      title="Activity Log"
+      icon="📜"
+      className="activity-timeline-card"
+      id="activity-timeline-panel"
     >
-      <div className="card__header">
-        <h2 className="card__title" id="activity-log-title">
-          <span className="card__title-icon" aria-hidden="true">📜</span>
-          Activity Log
-        </h2>
-      </div>
-
       <div className="card__body">
         {items.length === 0 ? (
           <div className="empty-state">
@@ -126,7 +120,7 @@ export default React.memo(function ActivityTimeline({ history = [], loading, err
                             const aParsed = parseAlert(alertText);
                             return (
                               <li key={aIdx} className={`timeline-expanded-item timeline-expanded-item--${aLevel}`}>
-                                <span className={`badge badge--${aLevel}`}>{aParsed.tag}</span>
+                                <Badge variant={aLevel}>{aParsed.tag}</Badge>
                                 <span className="timeline-expanded-text">{aParsed.message}</span>
                               </li>
                             );
@@ -147,6 +141,6 @@ export default React.memo(function ActivityTimeline({ history = [], loading, err
         <span className="timeline-footer-status">LOGGING STATUS: ACTIVE</span>
         <span className="timeline-footer-stats">BUFFER CAPACITY: 100% ({items.length}/15)</span>
       </div>
-    </article>
+    </Card>
   );
 });

@@ -1,9 +1,12 @@
 import { memo } from "react";
-import { densityTier, waitTier } from "../utils/helpers";
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
+import { densityTier, waitTier } from "../../../utils/helpers";
+import { THRESHOLDS } from "../../../constants/dashboardConstants";
+import { ResponsiveContainer, AreaChart, Area, YAxis, Tooltip } from "recharts";
+import Card from "../../shared/ui/Card";
+import Button from "../../shared/ui/Button";
 
 // Historical dummy data for risk trend
-const riskTrendData = [
+const RISK_TREND_DATA = [
   { time: "19:00", risk: 38 },
   { time: "19:15", risk: 42 },
   { time: "19:30", risk: 50 },
@@ -16,25 +19,24 @@ const riskTrendData = [
 export default memo(function RiskConfidencePanel({ dashboard, liveAlerts, isConnected, loading, error, onRetry }) {
   if (loading) {
     return (
-      <article className="card risk-confidence-card skeleton" id="risk-confidence-panel" aria-label="Loading operational risk insights">
+      <Card className="risk-confidence-card skeleton" id="risk-confidence-panel" aria-label="Loading operational risk insights">
         <div className="skeleton-box" style={{ width: "160px", height: "14px", marginBottom: "16px" }}></div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "20px 0" }}>
           <div className="skeleton-box" style={{ width: "90px", height: "90px", borderRadius: "50%" }}></div>
           <div className="skeleton-box" style={{ width: "70%", height: "12px" }}></div>
         </div>
-      </article>
+      </Card>
     );
   }
 
   if (error) {
     return (
-      <article className="card risk-confidence-card" id="risk-confidence-panel" tabIndex="0" aria-label="Operational Risk Error">
-        <div className="card__header">
-          <h2 className="card__title">
-            <span className="card__title-icon">⚠️</span>
-            Operational Risk Meter
-          </h2>
-        </div>
+      <Card
+        title="Operational Risk Meter"
+        icon="⚠️"
+        className="risk-confidence-card"
+        id="risk-confidence-panel"
+      >
         <div className="card__body">
           <div className="panel-error-card" role="alert">
             <span className="panel-error-card__icon" aria-hidden="true">⚠️</span>
@@ -43,17 +45,18 @@ export default memo(function RiskConfidencePanel({ dashboard, liveAlerts, isConn
               <p className="panel-error-card__message">Cannot calculate operational risk score.</p>
             </div>
             {onRetry && (
-              <button 
-                className="btn btn--secondary btn--xs" 
+              <Button 
+                variant="secondary" 
+                size="sm" 
                 onClick={onRetry}
-                aria-label="Retry loading risk insights"
+                ariaLabel="Retry loading risk insights"
               >
                 Retry
-              </button>
+              </Button>
             )}
           </div>
         </div>
-      </article>
+      </Card>
     );
   }
 
@@ -71,7 +74,7 @@ export default memo(function RiskConfidencePanel({ dashboard, liveAlerts, isConn
     : 0;
   const waitRisk = Math.min(100, (avgWait / 20) * 100);
 
-  const lowInventoryCount = inventory.filter((i) => i.quantity < 30).length;
+  const lowInventoryCount = inventory.filter((i) => i.quantity < THRESHOLDS.INVENTORY.LOW).length;
   const totalInventoryCount = inventory.length || 1;
   const inventoryRisk = Math.min(100, (lowInventoryCount / totalInventoryCount) * 100 * 3);
 
@@ -127,19 +130,12 @@ export default memo(function RiskConfidencePanel({ dashboard, liveAlerts, isConn
   const finalInsights = insights.slice(0, 3);
 
   return (
-    <article 
-      className="card risk-confidence-card" 
+    <Card
+      title="Operational Risk Meter"
+      icon="📊"
+      className="risk-confidence-card"
       id="risk-confidence-panel"
-      tabIndex="0"
-      aria-label={`Operational Risk is ${riskScore}% ${riskLevel}`}
     >
-      <div className="card__header">
-        <h2 className="card__title">
-          <span className="card__title-icon">📊</span>
-          Operational Risk Meter
-        </h2>
-      </div>
-
       <div className="card__body risk-meter-body-simplified">
         <div className="risk-gauge-and-insights">
           {/* Risk Circular Gauge */}
@@ -183,7 +179,7 @@ export default memo(function RiskConfidencePanel({ dashboard, liveAlerts, isConn
           <span className="risk-trend-title">RISK TREND ANALYSIS</span>
           <div style={{ width: "100%", height: "55px" }}>
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={riskTrendData} margin={{ top: 5, right: 5, left: -45, bottom: 0 }}>
+              <AreaChart data={RISK_TREND_DATA} margin={{ top: 5, right: 5, left: -45, bottom: 0 }}>
                 <YAxis domain={[0, 100]} hide />
                 <Tooltip contentStyle={{ background: "#111827", borderColor: "#1f2937", borderRadius: "4px", fontSize: "10px" }} />
                 <Area 
@@ -198,6 +194,6 @@ export default memo(function RiskConfidencePanel({ dashboard, liveAlerts, isConn
           </div>
         </div>
       </div>
-    </article>
+    </Card>
   );
 });

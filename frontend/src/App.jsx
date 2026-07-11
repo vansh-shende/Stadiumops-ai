@@ -16,24 +16,24 @@
  */
 
 import React, { Suspense, lazy } from "react";
-import Header from "./components/Header";
-import BackgroundGrid from "./components/BackgroundGrid";
-import NotificationToast from "./components/NotificationToast";
+import Header from "./components/layout/Header";
+import BackgroundGrid from "./components/layout/BackgroundGrid";
+import NotificationToast from "./components/layout/NotificationToast";
 import useDashboardData from "./hooks/useDashboardData";
 import { SimulationProvider } from "./context/SimulationContext";
 
 // Lazy load heavy dashboard components for code splitting & performance optimization
-const KPIRow = lazy(() => import("./components/KPIRow"));
-const GateTrafficPanel = lazy(() => import("./components/GateTrafficPanel"));
-const InventoryPanel = lazy(() => import("./components/InventoryPanel"));
-const StaffPanel = lazy(() => import("./components/StaffPanel"));
-const RiskConfidencePanel = lazy(() => import("./components/RiskConfidencePanel"));
-const StadiumOverview = lazy(() => import("./components/StadiumOverview"));
-const ActivityTimeline = lazy(() => import("./components/ActivityTimeline"));
-const AIThinkingPanel = lazy(() => import("./components/AIThinkingPanel"));
-const PredictionPanel = lazy(() => import("./components/PredictionPanel"));
-const CameraWall = lazy(() => import("./components/CameraWall"));
-const QuickActions = lazy(() => import("./components/QuickActions"));
+const KPIRow = lazy(() => import("./components/dashboard/cards/KPIRow"));
+const GateTrafficPanel = lazy(() => import("./components/dashboard/charts/GateTrafficPanel"));
+const InventoryPanel = lazy(() => import("./components/dashboard/charts/InventoryPanel"));
+const StaffPanel = lazy(() => import("./components/dashboard/charts/StaffPanel"));
+const RiskConfidencePanel = lazy(() => import("./components/dashboard/cards/RiskConfidencePanel"));
+const StadiumOverview = lazy(() => import("./components/dashboard/map/StadiumOverview"));
+const ActivityTimeline = lazy(() => import("./components/dashboard/alerts/ActivityTimeline"));
+const AIThinkingPanel = lazy(() => import("./components/dashboard/alerts/AIThinkingPanel"));
+const PredictionPanel = lazy(() => import("./components/dashboard/alerts/PredictionPanel"));
+const CameraWall = lazy(() => import("./components/dashboard/surveillance/CameraWall"));
+const QuickActions = lazy(() => import("./components/dashboard/cards/QuickActions"));
 
 function DashboardContent() {
   const {

@@ -1,63 +1,6 @@
-import { useState, useEffect, useRef, memo } from "react";
-
-function AnimatedNumber({ value }) {
-  const [displayVal, setDisplayVal] = useState(value);
-  const prevValRef = useRef(value);
-
-  useEffect(() => {
-    const matchPrev = String(prevValRef.current).match(/\d+/);
-    const matchNext = String(value).match(/\d+/);
-
-    if (matchPrev && matchNext) {
-      const start = parseInt(matchPrev[0], 10);
-      const end = parseInt(matchNext[0], 10);
-
-      if (start !== end) {
-        let startTimestamp = null;
-        const duration = 450;
-
-        const step = (timestamp) => {
-          if (!startTimestamp) startTimestamp = timestamp;
-          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-          const current = Math.round(start + progress * (end - start));
-          const formatted = String(value).replace(/\d+/, current);
-          setDisplayVal(formatted);
-
-          if (progress < 1) {
-            window.requestAnimationFrame(step);
-          } else {
-            prevValRef.current = value;
-            setDisplayVal(value);
-          }
-        };
-
-        window.requestAnimationFrame(step);
-      } else {
-        setDisplayVal(value);
-      }
-    } else {
-      setDisplayVal(value);
-      prevValRef.current = value;
-    }
-  }, [value]);
-
-  return <span className="animated-metric">{displayVal}</span>;
-}
-
-function MiniSparkline({ variant = "success" }) {
-  const paths = {
-    success: "M0,15 L8,17 L16,9 L24,12 L32,4 L40,6",
-    danger: "M0,6 L8,8 L16,14 L24,11 L32,18 L40,19",
-    warning: "M0,12 L8,14 L16,8 L24,15 L32,10 L40,11"
-  };
-  const path = paths[variant] || paths.success;
-  const color = variant === "danger" ? "var(--color-danger)" : variant === "warning" ? "var(--color-warning)" : "var(--color-success)";
-  return (
-    <svg width="40" height="20" viewBox="0 0 40 20" className="kpi-sparkline" aria-hidden="true">
-      <path d={path} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+import { memo } from "react";
+import MetricCard from "../../shared/ui/MetricCard";
+import { THRESHOLDS } from "../../../constants/dashboardConstants";
 
 export default memo(function KPIRow({ data, liveAlerts, isConnected, loading }) {
   if (loading) {
@@ -90,7 +33,7 @@ export default memo(function KPIRow({ data, liveAlerts, isConnected, loading }) 
     ? Math.round(gates.reduce((sum, g) => sum + g.wait_time, 0) / gates.length)
     : 0;
 
-  const lowInventoryCount = inventory.filter((i) => i.quantity < 30).length;
+  const lowInventoryCount = inventory.filter((i) => i.quantity < THRESHOLDS.INVENTORY.LOW).length;
   const availableStaff = staff.filter((s) => s.status === "Available").length;
   const totalStaff = staff.length;
   const criticalAlertCount = alerts.filter((a) => a.startsWith("[CRITICAL]")).length;
@@ -102,11 +45,11 @@ export default memo(function KPIRow({ data, liveAlerts, isConnected, loading }) 
     healthScore -= Math.min(25, criticalAlertCount * 5);
     const warningAlertsCount = alerts.filter((a) => a.startsWith("[WARNING]")).length;
     healthScore -= Math.min(15, warningAlertsCount * 3);
-    const highDensityGates = gates.filter((g) => g.crowd_density >= 80).length;
+    const highDensityGates = gates.filter((g) => g.crowd_density >= THRESHOLDS.DENSITY.MEDIUM).length;
     healthScore -= Math.min(16, highDensityGates * 4);
-    const highWaitGates = gates.filter((g) => g.wait_time > 15).length;
+    const highWaitGates = gates.filter((g) => g.wait_time > THRESHOLDS.WAIT.MEDIUM).length;
     healthScore -= Math.min(16, highWaitGates * 4);
-    const lowInventoryItems = inventory.filter((i) => i.quantity < 30).length;
+    const lowInventoryItems = inventory.filter((i) => i.quantity < THRESHOLDS.INVENTORY.LOW).length;
     healthScore -= Math.min(10, lowInventoryItems * 2);
     healthScore = Math.max(0, Math.min(100, healthScore));
   }
@@ -117,8 +60,8 @@ export default memo(function KPIRow({ data, liveAlerts, isConnected, loading }) 
       label: "Crowd Density",
       value: `${avgDensity}%`,
       icon: "👥",
-      variant: avgDensity >= 80 ? "danger" : avgDensity >= 50 ? "warning" : "success",
-      statusLabel: avgDensity >= 80 ? "CRIT" : avgDensity >= 50 ? "ELEV" : "OPTM",
+      variant: avgDensity >= THRESHOLDS.DENSITY.MEDIUM ? "danger" : avgDensity >= THRESHOLDS.DENSITY.LOW ? "warning" : "success",
+      statusLabel: avgDensity >= THRESHOLDS.DENSITY.MEDIUM ? "CRIT" : avgDensity >= THRESHOLDS.DENSITY.LOW ? "ELEV" : "OPTM",
       trend: "+2.4%",
       trendDirection: "up",
       trendVariant: "warning"
@@ -128,8 +71,8 @@ export default memo(function KPIRow({ data, liveAlerts, isConnected, loading }) 
       label: "Avg Wait Time",
       value: `${avgWait}m`,
       icon: "⏱",
-      variant: avgWait > 15 ? "danger" : avgWait > 5 ? "warning" : "success",
-      statusLabel: avgWait > 15 ? "DLAY" : "NOMN",
+      variant: avgWait > THRESHOLDS.WAIT.MEDIUM ? "danger" : avgWait > THRESHOLDS.WAIT.LOW ? "warning" : "success",
+      statusLabel: avgWait > THRESHOLDS.WAIT.MEDIUM ? "DLAY" : "NOMN",
       trend: "-1.5m",
       trendDirection: "down",
       trendVariant: "success"
@@ -182,44 +125,20 @@ export default memo(function KPIRow({ data, liveAlerts, isConnected, loading }) 
 
   return (
     <section className="kpi-row" id="kpi-row" aria-label="Key Performance Indicators">
-      {kpis.map((kpi) => {
-        const trendSymbol = kpi.trendDirection === "up" ? "▲" : kpi.trendDirection === "down" ? "▼" : "■";
-        return (
-          <div 
-            className="kpi-minimal-card" 
-            key={kpi.id} 
-            id={`kpi-${kpi.id}`}
-            tabIndex="0"
-            aria-label={`${kpi.label} is ${kpi.value}, status: ${kpi.statusLabel}, trend: ${kpi.trend}`}
-          >
-            {/* 1. Header (Icon and Status Badge) */}
-            <div className="kpi-minimal-card__header">
-              <span className="kpi-minimal-card__icon" aria-hidden="true">{kpi.icon}</span>
-              <span className={`kpi-minimal-card__badge kpi-minimal-card__badge--${kpi.variant}`}>
-                <span className="kpi-status-dot-pulse" aria-hidden="true" />
-                {kpi.statusLabel}
-              </span>
-            </div>
-
-            {/* 2. Body (Number Value and Mini Sparkline) */}
-            <div className="kpi-minimal-card__body">
-              <span className="kpi-minimal-card__val">
-                <AnimatedNumber value={kpi.value} />
-              </span>
-              <div className="kpi-minimal-card__viz">
-                <MiniSparkline variant={kpi.variant} />
-              </div>
-            </div>
-
-            {/* 3. Footer (Trend) */}
-            <div className="kpi-minimal-card__footer">
-              <span className={`kpi-minimal-card__trend kpi-minimal-card__trend--${kpi.trendVariant}`}>
-                {trendSymbol} {kpi.trend}
-              </span>
-            </div>
-          </div>
-        );
-      })}
+      {kpis.map((kpi) => (
+        <MetricCard
+          key={kpi.id}
+          id={`kpi-${kpi.id}`}
+          label={kpi.label}
+          value={kpi.value}
+          icon={kpi.icon}
+          variant={kpi.variant}
+          statusLabel={kpi.statusLabel}
+          trend={kpi.trend}
+          trendDirection={kpi.trendDirection}
+          trendVariant={kpi.trendVariant}
+        />
+      ))}
     </section>
   );
 });

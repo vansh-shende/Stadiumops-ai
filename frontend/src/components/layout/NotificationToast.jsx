@@ -3,7 +3,7 @@
  * that auto-dismiss after 3 seconds. Triggered on new AI alerts.
  */
 import { useState, useEffect, useRef } from "react";
-import { useSimulation } from "../context/SimulationContext";
+import { useSimulation } from "../../context/SimulationContext";
 
 export default function NotificationToast({ liveAlerts, lastUpdated }) {
   const [toasts, setToasts] = useState([]);
