@@ -167,7 +167,7 @@ export default function InventoryPanel({ inventory = [], loading, error, onRetry
               <button 
                 className="btn btn--secondary btn--sm" 
                 onClick={() => setShowDetails(!showDetails)}
-                aria-label={showDetails ? "Hide concession details" : "View raw concession details"}
+                aria-label={showDetails ? "Hide Details (Hide concession details)" : "View Details (View raw concession details)"}
               >
                 {showDetails ? "Hide Details" : "View Details"}
               </button>

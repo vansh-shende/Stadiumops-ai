@@ -186,7 +186,7 @@ export default function StaffPanel({ staff = [], loading, error, onRetry }) {
               <button 
                 className="btn btn--secondary btn--sm" 
                 onClick={() => setShowDetails(!showDetails)}
-                aria-label={showDetails ? "Hide staff members detail" : "View raw staff list"}
+                aria-label={showDetails ? "Hide Details (Hide staff members)" : "View Details (View raw staff list)"}
               >
                 {showDetails ? "Hide Details" : "View Details"}
               </button>

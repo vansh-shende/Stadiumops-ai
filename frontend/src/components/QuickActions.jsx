@@ -68,7 +68,7 @@ export default function QuickActions() {
           <button
             className="btn btn--xs quick-actions__cancel"
             onClick={clearSimulation}
-            aria-label="Cancel active simulation"
+            aria-label="Cancel active simulation (Cancel Sim)"
           >
             ✕ CANCEL SIM
           </button>
@@ -84,10 +84,9 @@ export default function QuickActions() {
               className={`quick-action-btn quick-action-btn--${action.variant} ${isActive ? "quick-action-btn--active" : ""} ${rippleKey === action.key ? "quick-action-btn--ripple" : ""}`}
               onClick={() => handleAction(action.key)}
               disabled={isSimulating && !isActive}
-              aria-label={action.label}
               id={`action-${action.key}`}
             >
-              <span className="quick-action-btn__icon">{action.icon}</span>
+              <span className="quick-action-btn__icon" aria-hidden="true">{action.icon}</span>
               <div className="quick-action-btn__text">
                 <span className="quick-action-btn__label">{action.label}</span>
                 <span className="quick-action-btn__desc">{action.description}</span>

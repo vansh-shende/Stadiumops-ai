@@ -89,6 +89,7 @@ export default function ActivityTimeline({ history = [], loading, error }) {
                   key={index} 
                   className={`timeline-item timeline-item--expandable ${isExpanded ? "timeline-item--expanded" : ""}`}
                   tabIndex="0"
+                  role="button"
                   onClick={() => toggleExpand(index)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {

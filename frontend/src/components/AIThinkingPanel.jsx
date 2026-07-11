@@ -303,7 +303,7 @@ export default function AIThinkingPanel({ liveAlerts, lastUpdated, loading, erro
               <button
                 className="btn btn--primary btn--sm"
                 onClick={() => setShowReasonModal(true)}
-                aria-label="View AI logic details"
+                aria-label="View Reasoning details"
               >
                 View Reasoning
               </button>

@@ -15,22 +15,25 @@
  *    - Simulation Mode
  */
 
+import React, { Suspense, lazy } from "react";
 import Header from "./components/Header";
-import KPIRow from "./components/KPIRow";
-import GateTrafficPanel from "./components/GateTrafficPanel";
-import InventoryPanel from "./components/InventoryPanel";
-import StaffPanel from "./components/StaffPanel";
-import RiskConfidencePanel from "./components/RiskConfidencePanel";
-import StadiumOverview from "./components/StadiumOverview";
-import ActivityTimeline from "./components/ActivityTimeline";
-import AIThinkingPanel from "./components/AIThinkingPanel";
-import PredictionPanel from "./components/PredictionPanel";
-import CameraWall from "./components/CameraWall";
-import QuickActions from "./components/QuickActions";
 import BackgroundGrid from "./components/BackgroundGrid";
 import NotificationToast from "./components/NotificationToast";
 import useDashboardData from "./hooks/useDashboardData";
 import { SimulationProvider } from "./context/SimulationContext";
+
+// Lazy load heavy dashboard components for code splitting & performance optimization
+const KPIRow = lazy(() => import("./components/KPIRow"));
+const GateTrafficPanel = lazy(() => import("./components/GateTrafficPanel"));
+const InventoryPanel = lazy(() => import("./components/InventoryPanel"));
+const StaffPanel = lazy(() => import("./components/StaffPanel"));
+const RiskConfidencePanel = lazy(() => import("./components/RiskConfidencePanel"));
+const StadiumOverview = lazy(() => import("./components/StadiumOverview"));
+const ActivityTimeline = lazy(() => import("./components/ActivityTimeline"));
+const AIThinkingPanel = lazy(() => import("./components/AIThinkingPanel"));
+const PredictionPanel = lazy(() => import("./components/PredictionPanel"));
+const CameraWall = lazy(() => import("./components/CameraWall"));
+const QuickActions = lazy(() => import("./components/QuickActions"));
 
 function DashboardContent() {
   const {
@@ -94,7 +97,12 @@ function DashboardContent() {
 
         {/* Dashboard content — rendered during loading or when data is available */}
         {(loading || dashboard) && (
-          <>
+          <Suspense fallback={
+            <div className="ai-loading-state" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "40vh", gap: "16px", padding: "40px" }}>
+              <div className="ai-loading-pulse" />
+              <span style={{ fontSize: "var(--font-sm)", color: "var(--text-secondary)", letterSpacing: "0.05em" }}>INITIALIZING INTERFACE DIRECTIVES…</span>
+            </div>
+          }>
             {/* HERO BLOCK: Stadium Overview + AI Commander + Risk */}
             <div className="hero-grid">
               {/* Priority 1: Large Stadium Overview Map + Stats Overlay */}
@@ -191,7 +199,7 @@ function DashboardContent() {
                 />
               </div>
             </div>
-          </>
+          </Suspense>
         )}
       </main>
 
