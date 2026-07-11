@@ -44,7 +44,31 @@ function getClient() {
   return client;
 }
 
-// --------------- Public API ---------------
+/** Limit external API calls to 8 seconds. */
+const GEMINI_TIMEOUT_MS = 8000;
+
+/**
+ * Wraps a promise with a timeout rejection.
+ * @param {Promise} promise - The promise to wrap.
+ * @param {number} ms - Timeout duration in milliseconds.
+ */
+function withTimeout(promise, ms) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`Google Gemini API request timed out after ${ms}ms`));
+    }, ms);
+
+    promise
+      .then((res) => {
+        clearTimeout(timer);
+        resolve(res);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
+}
 
 /**
  * Send a text prompt to Gemini and return the generated text.
@@ -57,10 +81,13 @@ async function generateText(prompt) {
   try {
     const ai = getClient();
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: prompt,
-    });
+    const response = await withTimeout(
+      ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: prompt,
+      }),
+      GEMINI_TIMEOUT_MS
+    );
 
     // Extract the text from the response.
     return response.text;

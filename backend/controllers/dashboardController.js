@@ -6,10 +6,10 @@
  *  Responsibility:
  *    Aggregates data from all three tables into a single
  *    unified snapshot for the dashboard endpoint.
- *    Called by routes/dashboard.js — the route layer stays thin.
+ *    Reuses stadiumDataService to avoid duplicate SQL queries.
  */
 
-const { dbAll } = require("../config/database");
+const { getStadiumSnapshot } = require("../services/stadiumDataService");
 const logger = require("../utils/logger");
 
 /**
@@ -19,20 +19,15 @@ const logger = require("../utils/logger");
  */
 async function getDashboard(_req, res) {
   try {
-    // Run all three queries concurrently for speed.
-    const [gates, inventory, staff] = await Promise.all([
-      dbAll("SELECT * FROM Gate_Traffic ORDER BY updated_at DESC"),
-      dbAll("SELECT * FROM Concession_Inventory ORDER BY updated_at DESC"),
-      dbAll("SELECT * FROM Staff_Logistics ORDER BY updated_at DESC"),
-    ]);
+    const snapshot = await getStadiumSnapshot();
 
     res.status(200).json({
       success: true,
       data: {
-        gates,
-        inventory,
-        staff,
-        generatedAt: new Date().toISOString(),
+        gates: snapshot.gateTraffic,
+        inventory: snapshot.inventory,
+        staff: snapshot.staff,
+        generatedAt: snapshot.generatedAt,
       },
     });
   } catch (err) {
