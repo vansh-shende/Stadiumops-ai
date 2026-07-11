@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { qtyTier, timeAgo } from "../utils/helpers";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
-export default function InventoryPanel({ inventory = [], loading, error, onRetry }) {
+export default memo(function InventoryPanel({ inventory = [], loading, error, onRetry }) {
   const [showDetails, setShowDetails] = useState(false);
   const hasData = inventory && inventory.length > 0;
 
@@ -177,4 +177,4 @@ export default function InventoryPanel({ inventory = [], loading, error, onRetry
       </div>
     </article>
   );
-}
+});

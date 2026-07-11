@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { timeAgo } from "../utils/helpers";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
-export default function StaffPanel({ staff = [], loading, error, onRetry }) {
+export default memo(function StaffPanel({ staff = [], loading, error, onRetry }) {
   const [showDetails, setShowDetails] = useState(false);
   const hasData = staff && staff.length > 0;
 
@@ -196,4 +196,4 @@ export default function StaffPanel({ staff = [], loading, error, onRetry }) {
       </div>
     </article>
   );
-}
+});

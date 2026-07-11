@@ -1712,17 +1712,19 @@ a:focus-visible {
   fill: none;
   stroke: var(--color-danger);
   stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
   animation: gate-pulse 1.8s infinite ease-out;
 }
 
 @keyframes gate-pulse {
   0% {
-    r: 12;
+    transform: scale(0.54);
     opacity: 0.8;
   }
 
   100% {
-    r: 28;
+    transform: scale(1.27);
     opacity: 0;
   }
 }
@@ -4412,6 +4414,8 @@ a:focus-visible {
   stroke: currentColor;
   stroke-width: 0.8;
   opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
   animation: gate-breathe-anim 2.5s ease-in-out infinite;
 }
 
@@ -4432,12 +4436,12 @@ a:focus-visible {
   0%,
   100% {
     opacity: 0;
-    r: 14;
+    transform: scale(0.77);
   }
 
   50% {
     opacity: 0.4;
-    r: 20;
+    transform: scale(1.11);
   }
 }
 
@@ -4454,19 +4458,19 @@ a:focus-visible {
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.04);
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 2px, transparent 2px);
   pointer-events: none;
   animation: scanline-sweep 4s linear infinite;
 }
 
 @keyframes scanline-sweep {
   0% {
-    top: -2px;
+    transform: translateY(0);
   }
 
   100% {
-    top: 100%;
+    transform: translateY(100%);
   }
 }
 

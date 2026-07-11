@@ -7,7 +7,7 @@
  *  animated probability meters and recommended actions.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useSimulation } from "../context/SimulationContext";
 
 const DEFAULT_PREDICTIONS = [
@@ -64,7 +64,7 @@ function AnimatedBar({ target, color }) {
   );
 }
 
-export default function PredictionPanel({ liveAlerts, dashboard }) {
+export default memo(function PredictionPanel({ liveAlerts, dashboard }) {
   const { activeSimulation, isSimulating } = useSimulation();
   const [animatedProbs, setAnimatedProbs] = useState({});
 
@@ -195,4 +195,4 @@ export default function PredictionPanel({ liveAlerts, dashboard }) {
       </div>
     </article>
   );
-}
+});

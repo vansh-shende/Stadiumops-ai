@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { classifyAlert, parseAlert } from "../utils/helpers";
 
-export default function ActivityTimeline({ history = [], loading, error }) {
+export default React.memo(function ActivityTimeline({ history = [], loading, error }) {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   if (loading) {
@@ -149,4 +149,4 @@ export default function ActivityTimeline({ history = [], loading, error }) {
       </div>
     </article>
   );
-}
+});

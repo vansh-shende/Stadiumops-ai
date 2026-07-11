@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 
 function AnimatedNumber({ value }) {
   const [displayVal, setDisplayVal] = useState(value);
@@ -59,7 +59,7 @@ function MiniSparkline({ variant = "success" }) {
   );
 }
 
-export default function KPIRow({ data, liveAlerts, isConnected, loading }) {
+export default memo(function KPIRow({ data, liveAlerts, isConnected, loading }) {
   if (loading) {
     return (
       <section className="kpi-row" id="kpi-row" aria-label="Key Performance Indicators Loading">
@@ -222,4 +222,4 @@ export default function KPIRow({ data, liveAlerts, isConnected, loading }) {
       })}
     </section>
   );
-}
+});

@@ -8,7 +8,7 @@
  *  by the SimulationContext.
  */
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useSimulation } from "../context/SimulationContext";
 
 const ACTIONS = [
@@ -42,7 +42,7 @@ const ACTIONS = [
   },
 ];
 
-export default function QuickActions() {
+export default memo(function QuickActions() {
   const { runSimulation, isSimulating, activeSimulation, clearSimulation } = useSimulation();
   const [rippleKey, setRippleKey] = useState(null);
 
@@ -102,4 +102,4 @@ export default function QuickActions() {
       </div>
     </article>
   );
-}
+});

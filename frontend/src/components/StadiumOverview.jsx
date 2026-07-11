@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { densityTier, waitTier } from "../utils/helpers";
 import { postGateAction } from "../services/api";
 
-export default function StadiumOverview({ gates = [], liveAlerts, isConnected, loading, error, onActionComplete }) {
+export default React.memo(function StadiumOverview({ gates = [], liveAlerts, isConnected, loading, error, onActionComplete }) {
   if (loading) {
     return (
       <article className="card stadium-overview-card skeleton" id="stadium-overview-panel">
@@ -353,4 +353,4 @@ export default function StadiumOverview({ gates = [], liveAlerts, isConnected, l
       )}
     </article>
   );
-}
+});

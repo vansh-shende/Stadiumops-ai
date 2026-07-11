@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { densityTier, waitTier } from "../utils/helpers";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
 
@@ -12,7 +13,7 @@ const riskTrendData = [
   { time: "20:30", risk: 52 }
 ];
 
-export default function RiskConfidencePanel({ dashboard, liveAlerts, isConnected, loading, error, onRetry }) {
+export default memo(function RiskConfidencePanel({ dashboard, liveAlerts, isConnected, loading, error, onRetry }) {
   if (loading) {
     return (
       <article className="card risk-confidence-card skeleton" id="risk-confidence-panel" aria-label="Loading operational risk insights">
@@ -199,4 +200,4 @@ export default function RiskConfidencePanel({ dashboard, liveAlerts, isConnected
       </div>
     </article>
   );
-}
+});

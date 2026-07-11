@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { densityTier, waitTier } from "../utils/helpers";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
 
@@ -13,7 +13,7 @@ const trendData = [
   { time: "20:30", crowd: 60, wait: 10 }
 ];
 
-export default function GateTrafficPanel({ gates = [], loading, error, onRetry }) {
+export default memo(function GateTrafficPanel({ gates = [], loading, error, onRetry }) {
   const [activeTab, setActiveTab] = useState("crowd");
   const hasData = gates && gates.length > 0;
 
@@ -160,4 +160,4 @@ export default function GateTrafficPanel({ gates = [], loading, error, onRetry }
       </div>
     </article>
   );
-}
+});

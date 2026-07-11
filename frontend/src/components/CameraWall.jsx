@@ -8,7 +8,7 @@
  *  color-coded severity badges.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useSimulation } from "../context/SimulationContext";
 
 const CAMERAS = [
@@ -46,7 +46,7 @@ const CAMERAS = [
   },
 ];
 
-export default function CameraWall() {
+export default memo(function CameraWall() {
   const [clock, setClock] = useState("");
   const { activeSimulation, isSimulating } = useSimulation();
 
@@ -132,4 +132,4 @@ export default function CameraWall() {
       </div>
     </article>
   );
-}
+});

@@ -15,7 +15,7 @@
  *    - Estimated impact
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { classifyAlert, parseAlert } from "../utils/helpers";
 import { useSimulation } from "../context/SimulationContext";
 const AI_STATES = [
@@ -51,7 +51,7 @@ function useTypingAnimation(text, speed = 18) {
   return { displayedText, isTyping };
 }
 
-export default function AIThinkingPanel({ liveAlerts, lastUpdated, loading, error, onRetry }) {
+export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading, error, onRetry }) {
   const [countdown, setCountdown] = useState(10);
   const [aiPhase, setAiPhase] = useState(0);
   const [showReasonModal, setShowReasonModal] = useState(false);
@@ -350,4 +350,4 @@ export default function AIThinkingPanel({ liveAlerts, lastUpdated, loading, erro
       )}
     </article>
   );
-}
+});
