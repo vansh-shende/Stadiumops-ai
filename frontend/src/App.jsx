@@ -97,67 +97,125 @@ function DashboardContent() {
 
         {/* Dashboard content — rendered during loading or when data is available */}
         {(loading || dashboard) && (
-          <Suspense fallback={
-            <div className="ai-loading-state" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "40vh", gap: "16px", padding: "40px" }}>
-              <div className="ai-loading-pulse" />
-              <span style={{ fontSize: "var(--font-sm)", color: "var(--text-secondary)", letterSpacing: "0.05em" }}>INITIALIZING INTERFACE DIRECTIVES…</span>
-            </div>
-          }>
+          <>
             {/* HERO BLOCK: Stadium Overview + AI Commander + Risk */}
             <div className="hero-grid">
               {/* Priority 1: Large Stadium Overview Map + Stats Overlay */}
               <div className="hero-left-section">
-                <StadiumOverview
-                  gates={dashboard?.gates}
-                  liveAlerts={liveAlerts}
-                  isConnected={isConnected}
-                  loading={loading}
-                  error={dashboardError}
-                  onActionComplete={refresh}
-                />
+                <Suspense fallback={
+                  <article className="card stadium-overview-card skeleton" style={{ height: "480px" }}>
+                    <div className="skeleton-box" style={{ width: "200px", height: "16px", marginBottom: "16px" }} />
+                    <div style={{ display: "flex", gap: "24px", height: "400px" }}>
+                      <div className="skeleton-box" style={{ flex: 1.5, height: "100%" }} />
+                      <div className="skeleton-box" style={{ flex: 1, height: "100%" }} />
+                    </div>
+                  </article>
+                }>
+                  <StadiumOverview
+                    gates={dashboard?.gates}
+                    liveAlerts={liveAlerts}
+                    isConnected={isConnected}
+                    loading={loading}
+                    error={dashboardError}
+                    onActionComplete={refresh}
+                  />
+                </Suspense>
               </div>
 
               {/* Priority 2 & 3: AI Commander + Risk Meter */}
               <div className="hero-sidebar">
                 {/* Feature 1: AI Thinking Panel (replaces AlertFeed) */}
-                <AIThinkingPanel
-                  liveAlerts={liveAlerts}
-                  lastUpdated={lastUpdated}
-                  loading={loading}
-                  error={alertsError}
-                  onRetry={refresh}
-                />
+                <Suspense fallback={
+                  <article className="card ai-thinking-panel skeleton" style={{ height: "300px" }}>
+                    <div className="skeleton-box" style={{ width: "150px", height: "16px", marginBottom: "16px" }} />
+                    <div className="skeleton-box" style={{ width: "100%", height: "200px" }} />
+                  </article>
+                }>
+                  <AIThinkingPanel
+                    liveAlerts={liveAlerts}
+                    lastUpdated={lastUpdated}
+                    loading={loading}
+                    error={alertsError}
+                    onRetry={refresh}
+                  />
+                </Suspense>
 
                 {/* Priority 3: Operational Risk Meter */}
-                <RiskConfidencePanel
-                  dashboard={dashboard}
-                  liveAlerts={liveAlerts}
-                  isConnected={isConnected}
-                  loading={loading}
-                  error={dashboardError || alertsError}
-                  onRetry={refresh}
-                />
+                <Suspense fallback={
+                  <article className="card risk-confidence-card skeleton" style={{ height: "180px" }}>
+                    <div className="skeleton-box" style={{ width: "160px", height: "14px", marginBottom: "16px" }} />
+                    <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                      <div className="skeleton-box" style={{ width: "90px", height: "90px", borderRadius: "50%" }} />
+                      <div className="skeleton-box" style={{ width: "70%", height: "12px" }} />
+                    </div>
+                  </article>
+                }>
+                  <RiskConfidencePanel
+                    dashboard={dashboard}
+                    liveAlerts={liveAlerts}
+                    isConnected={isConnected}
+                    loading={loading}
+                    error={dashboardError || alertsError}
+                    onRetry={refresh}
+                  />
+                </Suspense>
               </div>
             </div>
 
             {/* Feature 4: Quick Actions */}
-            <QuickActions />
+            <Suspense fallback={
+              <article className="card quick-actions-panel skeleton" style={{ height: "140px" }}>
+                <div className="skeleton-box" style={{ width: "120px", height: "16px", marginBottom: "16px" }} />
+                <div className="skeleton-box" style={{ width: "100%", height: "80px" }} />
+              </article>
+            }>
+              <QuickActions />
+            </Suspense>
 
             {/* Priority 4: KPI Row */}
-            <KPIRow
-              data={dashboard}
-              liveAlerts={liveAlerts}
-              isConnected={isConnected}
-              loading={loading}
-            />
+            <Suspense fallback={
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px", margin: "24px 0", height: "108px" }}>
+                {[...Array(6)].map((_, i) => (
+                  <div className="kpi-card skeleton" key={i} style={{ height: "108px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div className="skeleton-box" style={{ width: "20px", height: "20px", borderRadius: "50%" }} />
+                      <div className="skeleton-box" style={{ width: "40px", height: "10px" }} />
+                    </div>
+                    <div className="skeleton-box" style={{ width: "60px", height: "24px", margin: "8px 0" }} />
+                    <div className="skeleton-box" style={{ width: "100%", height: "8px" }} />
+                  </div>
+                ))}
+              </div>
+            }>
+              <KPIRow
+                data={dashboard}
+                liveAlerts={liveAlerts}
+                isConnected={isConnected}
+                loading={loading}
+              />
+            </Suspense>
 
             {/* Feature 2: Prediction Panel + Feature 3: Camera Wall */}
             <div className="intel-grid">
-              <PredictionPanel
-                liveAlerts={liveAlerts}
-                dashboard={dashboard}
-              />
-              <CameraWall />
+              <Suspense fallback={
+                <article className="card prediction-panel skeleton" style={{ height: "350px" }}>
+                  <div className="skeleton-box" style={{ width: "150px", height: "16px", marginBottom: "16px" }} />
+                  <div className="skeleton-box" style={{ width: "100%", height: "250px" }} />
+                </article>
+              }>
+                <PredictionPanel
+                  liveAlerts={liveAlerts}
+                  dashboard={dashboard}
+                />
+              </Suspense>
+              <Suspense fallback={
+                <article className="card camera-wall skeleton" style={{ height: "350px" }}>
+                  <div className="skeleton-box" style={{ width: "150px", height: "16px", marginBottom: "16px" }} />
+                  <div className="skeleton-box" style={{ width: "100%", height: "250px" }} />
+                </article>
+              }>
+                <CameraWall />
+              </Suspense>
             </div>
 
             {/* MAIN LOWER GRID: Gate Status, Inventory, Staff Logistics, and Event Activity Timeline */}
@@ -165,41 +223,88 @@ function DashboardContent() {
               {/* Left Column: Data panels */}
               <div className="left-column">
                 {/* Priority 5: Gate Status Traffic Grid */}
-                <GateTrafficPanel
-                  gates={dashboard?.gates}
-                  loading={loading}
-                  error={dashboardError}
-                  onRetry={refresh}
-                />
+                <Suspense fallback={
+                  <article className="card gate-traffic-card skeleton" style={{ height: "340px" }}>
+                    <div className="skeleton-box" style={{ width: "150px", height: "16px", marginBottom: "16px" }} />
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: "12px" }}>
+                      {[...Array(6)].map((_, i) => (
+                        <div className="ops-card skeleton" key={i} style={{ height: "120px" }}>
+                          <div className="skeleton-box" style={{ width: "40%", height: "16px", marginBottom: "8px" }} />
+                          <div className="skeleton-box" style={{ width: "100%", height: "24px" }} />
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                }>
+                  <GateTrafficPanel
+                    gates={dashboard?.gates}
+                    loading={loading}
+                    error={dashboardError}
+                    onRetry={refresh}
+                  />
+                </Suspense>
 
                 {/* Priority 6: Concession Inventory Summary */}
-                <InventoryPanel
-                  inventory={dashboard?.inventory}
-                  loading={loading}
-                  error={dashboardError}
-                  onRetry={refresh}
-                />
+                <Suspense fallback={
+                  <article className="card inventory-card skeleton" style={{ height: "300px" }}>
+                    <div className="skeleton-box" style={{ width: "150px", height: "16px", marginBottom: "16px" }} />
+                    <div className="skeleton-box" style={{ width: "100%", height: "60px" }} />
+                    <div className="skeleton-box" style={{ width: "120px", height: "24px" }} />
+                  </article>
+                }>
+                  <InventoryPanel
+                    inventory={dashboard?.inventory}
+                    loading={loading}
+                    error={dashboardError}
+                    onRetry={refresh}
+                  />
+                </Suspense>
 
                 {/* Priority 8: Staff Logistics Summary */}
-                <StaffPanel
-                  staff={dashboard?.staff}
-                  loading={loading}
-                  error={dashboardError}
-                  onRetry={refresh}
-                />
+                <Suspense fallback={
+                  <article className="card staff-card skeleton" style={{ height: "300px" }}>
+                    <div className="skeleton-box" style={{ width: "150px", height: "16px", marginBottom: "16px" }} />
+                    <div className="skeleton-box" style={{ width: "100%", height: "60px" }} />
+                    <div className="skeleton-box" style={{ width: "120px", height: "24px" }} />
+                  </article>
+                }>
+                  <StaffPanel
+                    staff={dashboard?.staff}
+                    loading={loading}
+                    error={dashboardError}
+                    onRetry={refresh}
+                  />
+                </Suspense>
               </div>
 
               {/* Right Column: Historical Event Log */}
               <div className="right-column-timeline">
                 {/* Priority 7: Activity Timeline */}
-                <ActivityTimeline
-                  history={alertHistory}
-                  loading={loading}
-                  error={historyError}
-                />
+                <Suspense fallback={
+                  <article className="card activity-timeline-card skeleton" style={{ height: "980px" }}>
+                    <div className="skeleton-box" style={{ width: "160px", height: "14px", marginBottom: "16px" }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                      {[...Array(6)].map((_, i) => (
+                        <div key={i} style={{ display: "flex", gap: "12px" }}>
+                          <div className="skeleton-box" style={{ width: "12px", height: "12px", borderRadius: "50%" }} />
+                          <div style={{ flex: 1 }}>
+                            <div className="skeleton-box" style={{ width: "30%", height: "10px", marginBottom: "6px" }} />
+                            <div className="skeleton-box" style={{ width: "70%", height: "14px" }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                }>
+                  <ActivityTimeline
+                    history={alertHistory}
+                    loading={loading}
+                    error={historyError}
+                  />
+                </Suspense>
               </div>
             </div>
-          </Suspense>
+          </>
         )}
       </main>
 
