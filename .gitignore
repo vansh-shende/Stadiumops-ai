@@ -1,0 +1,29 @@
+# Root .gitignore for StadiumOps AI
+
+# Dependencies
+**/node_modules/
+
+# Local Environment Variables
+**/.env
+**/.env*.local
+
+# Database Files
+**/*.db
+**/*.db-*
+**/*.sqlite
+**/*.sqlite3
+
+# Production Builds
+**/dist/
+**/dist-ssr/
+
+# Editor & System Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

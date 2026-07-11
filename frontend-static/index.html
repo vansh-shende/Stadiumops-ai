@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>StadiumOps AI — Operations Dashboard</title>
+  <meta name="description" content="Real-time FIFA Stadium tactical operations dashboard powered by AI anomaly detection. Monitor gate traffic, concession inventory, staff logistics and AI-generated tactical directives." />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Favicon (emoji-based inline SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏟</text></svg>" />
+</head>
+
+<body>
+  <!-- =======================================================
+       HEADER
+       ======================================================= -->
+  <header class="header" id="app-header">
+    <!-- Brand -->
+    <div class="header__brand">
+      <div class="header__icon">🏟</div>
+      <h1 class="header__title">StadiumOps <span>AI</span></h1>
+    </div>
+
+    <!-- Status + Clock -->
+    <div class="header__meta">
+      <span class="badge badge--connected" id="connection-badge">
+        <span class="badge__dot"></span>
+        Connected
+      </span>
+      <time class="header__clock" id="header-clock">—</time>
+    </div>
+  </header>
+
+  <!-- =======================================================
+       DASHBOARD CONTAINER
+       ======================================================= -->
+  <main class="dashboard" id="dashboard">
+
+    <!-- ---- KPI Summary Row ---- -->
+    <section class="kpi-row" id="kpi-row" aria-label="Key Performance Indicators"></section>
+
+    <!-- ---- Main Two-Column Grid ---- -->
+    <div class="main-grid">
+
+      <!-- LEFT COLUMN: Data Panels -->
+      <div class="left-column">
+
+        <!-- Gate Traffic Panel -->
+        <article class="card" id="gate-traffic-panel">
+          <div class="card__header">
+            <h2 class="card__title">
+              <span class="card__title-icon">🚪</span>
+              Gate Traffic
+            </h2>
+            <span class="card__count" id="gate-count">0</span>
+          </div>
+          <div class="card__body">
+            <table class="data-table" id="gate-traffic-table">
+              <thead>
+                <tr>
+                  <th>Gate</th>
+                  <th>Crowd Density</th>
+                  <th>Wait Time</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody id="gate-traffic-body"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Concession Inventory Panel -->
+        <article class="card" id="inventory-panel">
+          <div class="card__header">
+            <h2 class="card__title">
+              <span class="card__title-icon">📦</span>
+              Concession Inventory
+            </h2>
+            <span class="card__count" id="inventory-count">0</span>
+          </div>
+          <div class="card__body">
+            <table class="data-table" id="inventory-table">
+              <thead>
+                <tr>
+                  <th>Stand</th>
+                  <th>Item</th>
+                  <th>Qty</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-body"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Staff Logistics Panel -->
+        <article class="card" id="staff-panel">
+          <div class="card__header">
+            <h2 class="card__title">
+              <span class="card__title-icon">🧑‍💼</span>
+              Staff Logistics
+            </h2>
+            <span class="card__count" id="staff-count">0</span>
+          </div>
+          <div class="card__body">
+            <table class="data-table" id="staff-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Zone</th>
+                  <th>Status</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody id="staff-body"></tbody>
+            </table>
+          </div>
+        </article>
+
+      </div><!-- /left-column -->
+
+      <!-- RIGHT COLUMN: AI Alert Feed -->
+      <div class="right-column">
+        <article class="card alert-feed" id="alert-feed-panel">
+          <div class="card__header">
+            <h2 class="card__title">
+              <span class="card__title-icon">🤖</span>
+              AI Tactical Directives
+            </h2>
+            <span class="card__count" id="alert-count">Live</span>
+          </div>
+          <ul class="alert-feed__list" id="alert-feed-list"></ul>
+          <div class="alert-feed__footer">
+            <span class="alert-feed__timestamp" id="alert-feed-timestamp">—</span>
+          </div>
+        </article>
+      </div><!-- /right-column -->
+
+    </div><!-- /main-grid -->
+
+  </main>
+
+  <!-- =======================================================
+       FOOTER
+       ======================================================= -->
+  <footer class="footer">
+    StadiumOps AI &middot; FIFA Stadium Tactical Operations Dashboard &middot; 2026
+  </footer>
+
+  <!-- =======================================================
+       SCRIPTS  (data first, then app)
+       ======================================================= -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
