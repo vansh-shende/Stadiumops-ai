@@ -27,8 +27,11 @@ export default {
     background: dark.body,
   },
   body: {
-    background: `url(${bgAdmin})`,
+    background: `linear-gradient(rgba(3, 7, 18, 0.88), rgba(3, 7, 18, 0.94)), url(${bgAdmin})`,
     backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundAttachment: "fixed",
+    backgroundRepeat: "no-repeat",
   },
   "*, *::before, *::after": {
     margin: 0,
