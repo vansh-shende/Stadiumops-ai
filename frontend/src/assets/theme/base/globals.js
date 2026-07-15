@@ -27,11 +27,22 @@ export default {
     background: dark.body,
   },
   body: {
-    background: `linear-gradient(rgba(3, 7, 18, 0.88), rgba(3, 7, 18, 0.94)), url(${bgAdmin})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundAttachment: "fixed",
-    backgroundRepeat: "no-repeat",
+    background: "linear-gradient(135deg, rgba(8, 16, 40, 0.55) 0%, rgba(4, 8, 20, 0.75) 100%)",
+    position: "relative",
+    "&::before": {
+      content: '""',
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: -1,
+      backgroundImage: `url(${bgAdmin})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      filter: "brightness(0.65) contrast(1.1) saturate(0.9) blur(3px)",
+    }
   },
   "*, *::before, *::after": {
     margin: 0,
