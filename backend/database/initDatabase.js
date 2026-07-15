@@ -148,6 +148,14 @@ async function initializeDatabase() {
     await dbRun(CREATE_STAFF_LOGISTICS);
     logger.info("DB", "Table Staff_Logistics ........... OK");
 
+    // Create Indexes for Query Optimization
+    await dbRun("CREATE INDEX IF NOT EXISTS idx_gate_traffic_updated_at ON Gate_Traffic (updated_at DESC)");
+    await dbRun("CREATE INDEX IF NOT EXISTS idx_gate_traffic_gate_name ON Gate_Traffic (gate_name)");
+    await dbRun("CREATE INDEX IF NOT EXISTS idx_concession_inventory_updated_at ON Concession_Inventory (updated_at DESC)");
+    await dbRun("CREATE INDEX IF NOT EXISTS idx_staff_logistics_updated_at ON Staff_Logistics (updated_at DESC)");
+    await dbRun("CREATE INDEX IF NOT EXISTS idx_staff_logistics_zone ON Staff_Logistics (zone)");
+    logger.info("DB", "Database indexes created ........ OK");
+
     // Seed sample data when tables are empty.
     await seedTableIfEmpty("Gate_Traffic", GATE_SEED);
     await seedTableIfEmpty("Concession_Inventory", CONCESSION_SEED);

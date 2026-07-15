@@ -26,6 +26,11 @@ export default React.memo(function StadiumOverview({
   error,
   onActionComplete
 }) {
+  const [selectedGate, setSelectedGate] = useState(null);
+  const [submittingAction, setSubmittingAction] = useState(null);
+  const [actionSuccess, setActionSuccess] = useState(null);
+  const [actionError, setActionError] = useState(null);
+
   if (loading) {
     return (
       <Card className="stadium-overview-card skeleton" id="stadium-overview-panel">
@@ -60,11 +65,6 @@ export default React.memo(function StadiumOverview({
   }
 
   const criticalAlertCount = liveAlerts?.anomalyCount || 0;
-  
-  const [selectedGate, setSelectedGate] = useState(null);
-  const [submittingAction, setSubmittingAction] = useState(null);
-  const [actionSuccess, setActionSuccess] = useState(null);
-  const [actionError, setActionError] = useState(null);
 
   const handleGateSelect = (gate) => {
     setSelectedGate(gate);
@@ -190,7 +190,16 @@ export default React.memo(function StadiumOverview({
                   className={`gate-group ${statusClass}`}
                   filter="url(#gateGlow)"
                   onClick={() => handleGateSelect(gate)}
-                  style={{ cursor: "pointer" }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleGateSelect(gate);
+                    }
+                  }}
+                  tabIndex="0"
+                  role="button"
+                  aria-label={`Gate ${gate.gate_name.split(" - ")[0]}. Crowd density: ${gate.crowd_density} percent. Wait time: ${gate.wait_time} minutes.`}
+                  style={{ cursor: "pointer", outline: "none" }}
                 >
                   <circle cx={coords.x} cy={coords.y} r="18" className="gate-breathe-ring" />
                   {isCritical && (

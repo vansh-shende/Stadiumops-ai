@@ -3673,6 +3673,7 @@ a:focus-visible {
   font-weight: 700;
   font-family: var(--font-mono);
   min-width: 48px;
+  color: var(--text-primary);
 }
 
 .prediction-bar {
@@ -3686,6 +3687,26 @@ a:focus-visible {
 .prediction-bar__fill {
   height: 100%;
   border-radius: var(--radius-sm);
+}
+
+.prediction-bar__fill--info {
+  background-color: var(--color-info);
+  box-shadow: 0 0 8px var(--color-info);
+}
+
+.prediction-bar__fill--warning {
+  background-color: var(--color-warning);
+  box-shadow: 0 0 8px var(--color-warning);
+}
+
+.prediction-bar__fill--danger {
+  background-color: var(--color-danger);
+  box-shadow: 0 0 8px var(--color-danger);
+}
+
+.prediction-bar__fill--success {
+  background-color: var(--color-success);
+  box-shadow: 0 0 8px var(--color-success);
 }
 
 .prediction-card__details {

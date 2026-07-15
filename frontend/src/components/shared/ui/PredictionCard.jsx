@@ -12,7 +12,9 @@ export default React.memo(function PredictionCard({
   variant = "info", // "danger", "warning", "info"
 }) {
   return (
-    <div className={`prediction-card prediction-card--${variant}`}>
+    <div 
+      className={`prediction-card prediction-card--${variant}`}
+    >
       <div className="prediction-card__header">
         <span className="prediction-card__location">{location}</span>
         <span className="prediction-card__severity">{badgeText}</span>

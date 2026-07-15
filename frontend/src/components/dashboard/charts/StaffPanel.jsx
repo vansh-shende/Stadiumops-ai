@@ -153,8 +153,6 @@ export default memo(function StaffPanel({ staff = [], loading, error, onRetry })
                     <div 
                       key={member.id} 
                       className={`ops-card ops-card--border-${statusColor}`}
-                      tabIndex="0"
-                      aria-label={`${member.staff_name}: status ${member.status}, assigned to ${member.zone}`}
                     >
                       <div className="ops-card__staff-header">
                         <div className="ops-avatar" aria-hidden="true">

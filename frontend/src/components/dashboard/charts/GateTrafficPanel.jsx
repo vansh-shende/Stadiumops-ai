@@ -74,8 +74,6 @@ export default memo(function GateTrafficPanel({ gates = [], loading, error, onRe
                   <div 
                     key={gate.id} 
                     className={`gate-minimal-card gate-minimal-card--${waitColor}`} 
-                    tabIndex="0"
-                    aria-label={`${gate.gate_name}: wait time ${gate.wait_time} minutes`}
                   >
                     <div className="gate-minimal-card__header">
                       <span className="gate-minimal-card__name">

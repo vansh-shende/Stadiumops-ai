@@ -1,47 +1,63 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useSimulation } from "../../../context/SimulationContext";
 import { DEFAULT_PREDICTIONS } from "../../../constants/dashboardConstants";
 import Card from "../../shared/ui/Card";
 import PredictionCard from "../../shared/ui/PredictionCard";
 
-export default memo(function PredictionPanel({ liveAlerts, dashboard }) {
+export default memo(function PredictionPanel({ dashboard }) {
   const { activeSimulation, isSimulating } = useSimulation();
   const [animatedProbs, setAnimatedProbs] = useState({});
 
   // Build predictions from live data + defaults
-  const basePredictions = (() => {
-    const preds = DEFAULT_PREDICTIONS.map(p => ({ ...p }));
-    const gates = dashboard?.gates || [];
-    
-    // Enhance predictions based on real gate data
-    gates.forEach((gate) => {
-      if (gate.crowd_density >= 75) {
-        const existing = preds.find((p) => p.gate === gate.gate_name.split(" - ")[0]);
-        if (existing) {
-          existing.probability = Math.min(99, gate.crowd_density + 8);
+  const predictions = useMemo(() => {
+    const basePredictions = (() => {
+      const preds = DEFAULT_PREDICTIONS.map(p => ({ ...p }));
+      const gates = dashboard?.gates || [];
+      
+      // Enhance predictions based on real gate data
+      gates.forEach((gate) => {
+        if (gate.crowd_density >= 75) {
+          const gateName = gate.gate_name.split(" - ")[0];
+          const existing = preds.find((p) => p.gate === gateName);
+          if (existing) {
+            existing.probability = Math.min(99, gate.crowd_density + 8);
+          } else {
+            // Add dynamically if a new gate becomes congested
+            preds.unshift({
+              id: `dyn-${gate.id}`,
+              gate: gateName,
+              metric: "Congestion Probability",
+              probability: Math.min(99, gate.crowd_density + 8),
+              eta: "5 min",
+              action: "Open Overflow Gate",
+              reduction: "30%",
+              severity: "danger",
+            });
+          }
         }
-      }
-    });
+      });
 
-    return preds;
-  })();
+      // Keep top 3 most critical predictions
+      return preds.sort((a, b) => b.probability - a.probability).slice(0, 3);
+    })();
 
-  // Override with simulation prediction
-  const predictions = isSimulating && activeSimulation?.prediction
-    ? [
-        {
-          id: "sim",
-          gate: activeSimulation.prediction.gate,
-          metric: "Simulation Prediction",
-          probability: activeSimulation.prediction.probability,
-          eta: activeSimulation.prediction.eta,
-          action: activeSimulation.prediction.action,
-          reduction: activeSimulation.prediction.reduction,
-          severity: "danger",
-        },
-        ...basePredictions.slice(0, 2),
-      ]
-    : basePredictions;
+    // Override with simulation prediction
+    return isSimulating && activeSimulation?.prediction
+      ? [
+          {
+            id: "sim",
+            gate: activeSimulation.prediction.gate,
+            metric: "Simulation Prediction",
+            probability: activeSimulation.prediction.probability,
+            eta: activeSimulation.prediction.eta,
+            action: activeSimulation.prediction.action,
+            reduction: activeSimulation.prediction.reduction,
+            severity: "danger",
+          },
+          ...basePredictions.slice(0, 2),
+        ]
+      : basePredictions;
+  }, [dashboard?.gates, isSimulating, activeSimulation?.prediction]);
 
   // Animate probability counters
   useEffect(() => {
@@ -68,7 +84,7 @@ export default memo(function PredictionPanel({ liveAlerts, dashboard }) {
     }, 20);
 
     return () => clearInterval(interval);
-  }, [isSimulating, liveAlerts, predictions]);
+  }, [predictions]);
 
   return (
     <Card

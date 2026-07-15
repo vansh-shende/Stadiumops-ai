@@ -138,8 +138,6 @@ export default memo(function InventoryPanel({ inventory = [], loading, error, on
                     <div 
                       key={item.id} 
                       className={`ops-card ops-card--border-${statusCls}`}
-                      tabIndex="0"
-                      aria-label={`${item.stand_name}: item ${item.item_name}, quantity remaining ${item.quantity}`}
                     >
                       <div className="ops-card__header">
                         <span className="ops-card__stand">{item.stand_name}</span>

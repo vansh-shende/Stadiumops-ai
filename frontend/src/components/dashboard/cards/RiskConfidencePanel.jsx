@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { densityTier, waitTier } from "../../../utils/helpers";
 import { THRESHOLDS } from "../../../constants/dashboardConstants";
 import { ResponsiveContainer, AreaChart, Area, YAxis, Tooltip } from "recharts";
 import Card from "../../shared/ui/Card";
@@ -16,7 +15,7 @@ const RISK_TREND_DATA = [
   { time: "20:30", risk: 52 }
 ];
 
-export default memo(function RiskConfidencePanel({ dashboard, liveAlerts, isConnected, loading, error, onRetry }) {
+export default memo(function RiskConfidencePanel({ dashboard, isConnected, loading, error, onRetry }) {
   if (loading) {
     return (
       <Card className="risk-confidence-card skeleton" id="risk-confidence-panel" aria-label="Loading operational risk insights">
@@ -140,7 +139,7 @@ export default memo(function RiskConfidencePanel({ dashboard, liveAlerts, isConn
         <div className="risk-gauge-and-insights">
           {/* Risk Circular Gauge */}
           <div className="gauge-block-single">
-            <div className="gauge-ring-wrapper-large">
+            <div className="gauge-ring-wrapper-large" role="img" aria-label={`Operational risk score: ${riskScore}%, Level: ${riskLevel}`}>
               <svg viewBox="0 0 36 36" className="circular-chart circular-chart--large" aria-hidden="true">
                 <path className="circle-bg"
                   d="M18 2.0845

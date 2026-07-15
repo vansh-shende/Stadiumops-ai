@@ -77,8 +77,6 @@ export default React.memo(function MetricCard({
     <div 
       className={`kpi-minimal-card ${className}`.trim()} 
       id={id}
-      tabIndex="0"
-      aria-label={`${label} is ${value}, status: ${statusLabel}, trend: ${trend}`}
     >
       {/* 1. Header (Icon and Status Badge) */}
       <div className="kpi-minimal-card__header">

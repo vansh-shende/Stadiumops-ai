@@ -1,3 +1,4 @@
+/* eslint-disable react/only-export-components */
 /**
  * =========================================================
  *  StadiumOps AI — Simulation Context
