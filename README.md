@@ -100,7 +100,7 @@ cd ../frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your web browser.
+Open [https://frontend-xi-six-14.vercel.app/) in your web browser.
 
 ### 4. Running the Telemetry Simulator
 To simulate real-time crowd, inventory, and staff fluctuations in the database every 10 seconds:
