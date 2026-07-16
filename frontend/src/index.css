@@ -1109,7 +1109,7 @@ body {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .kpi-row {
     grid-template-columns: 1fr;
   }
@@ -3937,7 +3937,7 @@ a:focus-visible {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .quick-actions-grid {
     grid-template-columns: 1fr;
   }

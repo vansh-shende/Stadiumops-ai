@@ -42,7 +42,7 @@ function DashboardLayout({ children }) {
   return (
     <VuiBox
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
-        p: 3,
+        p: { xs: 1.5, sm: 2, md: 3 },
         position: "relative",
 
         [breakpoints.up("xl")]: {
