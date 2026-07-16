@@ -1,9 +1,9 @@
-# Root .gitignore for StadiumOps AI
+# ─── StadiumOps AI — Root .gitignore ───
 
 # Dependencies
 **/node_modules/
 
-# Local Environment Variables
+# Environment Variables
 **/.env
 **/.env*.local
 
@@ -13,9 +13,17 @@
 **/*.sqlite
 **/*.sqlite3
 
-# Production Builds
+# Build Output
 **/dist/
 **/dist-ssr/
+
+# Vercel
+**/.vercel/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
 
 # Editor & System Files
 .vscode/
@@ -27,4 +35,3 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
-vision-ui-temp/

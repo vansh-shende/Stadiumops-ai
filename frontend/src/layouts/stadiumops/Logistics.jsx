@@ -6,6 +6,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import useDashboardData from "../../hooks/useDashboardData";
+import DemoModeBanner from "../../components/shared/DemoModeBanner";
 
 import GateTrafficPanel from "../../components/dashboard/charts/GateTrafficPanel";
 import InventoryPanel from "../../components/dashboard/charts/InventoryPanel";
@@ -17,6 +18,7 @@ export default function LogisticsDashboard() {
     loading,
     error,
     isConnected,
+    isDemoMode,
     dashboardError,
     refresh,
   } = useDashboardData();
@@ -25,7 +27,9 @@ export default function LogisticsDashboard() {
     <DashboardLayout>
       <DashboardNavbar />
       <VuiBox py={3}>
-        {!isConnected && dashboard && (
+        {isDemoMode && <DemoModeBanner />}
+
+        {!isConnected && !isDemoMode && dashboard && (
           <VuiBox mb={3} p={2} sx={{ 
             backgroundColor: "rgba(239, 68, 68, 0.1)", 
             borderLeft: "4px solid #ef4444",

@@ -26,6 +26,7 @@ import AIThinkingPanel from "../../components/dashboard/alerts/AIThinkingPanel";
 import PredictionPanel from "../../components/dashboard/alerts/PredictionPanel";
 import CameraWall from "../../components/dashboard/surveillance/CameraWall";
 import QuickActions from "../../components/dashboard/cards/QuickActions";
+import DemoModeBanner from "../../components/shared/DemoModeBanner";
 
 export default function StadiumOpsDashboard() {
   const {
@@ -35,6 +36,7 @@ export default function StadiumOpsDashboard() {
     loading,
     error,
     isConnected,
+    isDemoMode,
     lastUpdated,
     dashboardError,
     alertsError,
@@ -47,8 +49,11 @@ export default function StadiumOpsDashboard() {
       <DashboardNavbar />
       
       <VuiBox py={3}>
-        {/* Connection banner */}
-        {!isConnected && dashboard && (
+        {/* Demo mode banner */}
+        {isDemoMode && <DemoModeBanner />}
+
+        {/* Connection lost banner (only when NOT in demo mode) */}
+        {!isConnected && !isDemoMode && dashboard && (
           <VuiBox mb={3} p={2} sx={{ 
             backgroundColor: "rgba(239, 68, 68, 0.1)", 
             borderLeft: "4px solid #ef4444",

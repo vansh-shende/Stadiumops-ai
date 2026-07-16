@@ -6,6 +6,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import useDashboardData from "../../hooks/useDashboardData";
+import DemoModeBanner from "../../components/shared/DemoModeBanner";
 
 import KPIRow from "../../components/dashboard/cards/KPIRow";
 import StadiumOverview from "../../components/dashboard/map/StadiumOverview";
@@ -18,6 +19,7 @@ export default function MapOperationsDashboard() {
     loading,
     error,
     isConnected,
+    isDemoMode,
     dashboardError,
     refresh,
   } = useDashboardData();
@@ -26,7 +28,9 @@ export default function MapOperationsDashboard() {
     <DashboardLayout>
       <DashboardNavbar />
       <VuiBox py={3}>
-        {!isConnected && dashboard && (
+        {isDemoMode && <DemoModeBanner />}
+
+        {!isConnected && !isDemoMode && dashboard && (
           <VuiBox mb={3} p={2} sx={{ 
             backgroundColor: "rgba(239, 68, 68, 0.1)", 
             borderLeft: "4px solid #ef4444",

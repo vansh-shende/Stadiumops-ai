@@ -6,9 +6,9 @@
   /* Colors - Premium Cyber FIFA Command Center Theme */
   --bg-primary: #030712;
   /* Deepest space night */
-  --bg-card: rgba(10, 18, 36, 0.7);
+  --bg-card: rgba(6, 12, 26, 0.25);
   /* Semi-transparent glass navy */
-  --bg-card-hover: rgba(22, 38, 70, 0.75);
+  --bg-card-hover: rgba(22, 38, 70, 0.35);
   /* Glowing hover state */
   --bg-elevated: #0f172a;
   --bg-input: #090d16;
@@ -106,6 +106,11 @@ body {
   line-height: 1.5;
   color: var(--text-primary);
   background-color: var(--bg-primary);
+  background-image: linear-gradient(rgba(3, 7, 18, 0.45), rgba(3, 7, 18, 0.65)), url('/stadium_bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -138,6 +143,8 @@ body {
   justify-content: space-between;
   padding: 0 var(--space-lg);
   background: var(--bg-card);
+  backdrop-filter: blur(8px) saturate(125%);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
   border-bottom: 1px solid var(--border-default);
   position: fixed;
   top: 0;
@@ -438,6 +445,8 @@ body {
 
 .kpi-card {
   background: var(--bg-card);
+  backdrop-filter: blur(8px) saturate(125%);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   padding: var(--space-md) var(--space-lg);
@@ -549,8 +558,8 @@ body {
  * ========================================================= */
 .card {
   background: var(--bg-card);
-  backdrop-filter: blur(12px) saturate(120%);
-  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  backdrop-filter: blur(8px) saturate(125%);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -2812,6 +2821,8 @@ a:focus-visible {
 
 .gate-minimal-card {
   background: var(--bg-card);
+  backdrop-filter: blur(8px) saturate(125%);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   padding: var(--space-md);

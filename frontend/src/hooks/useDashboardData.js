@@ -11,6 +11,7 @@
  *  Features:
  *    - Auto-refresh every 10 seconds
  *    - Independent loading/error states per data source
+ *    - Demo mode detection (when backend is unavailable)
  *    - Cleanup on unmount (clears interval, aborts in-flight requests)
  */
 
@@ -28,6 +29,7 @@ const REFRESH_INTERVAL = 10_000;
  * @property {boolean}      loading        - True during the initial load
  * @property {string|null}  error          - Error message if all three calls fail
  * @property {boolean}      isConnected    - True if at least one API call succeeds
+ * @property {boolean}      isDemoMode     - True if showing fallback demo data
  * @property {Date|null}    lastUpdated    - Timestamp of last successful fetch
  */
 
@@ -38,6 +40,7 @@ export default function useDashboardData() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(null);
 
   // Individual errors for panel error handling
@@ -64,12 +67,14 @@ export default function useDashboardData() {
       if (!mountedRef.current) return;
 
       let anySuccess = false;
+      let usingDemoData = false;
 
       // --- Dashboard ---
       if (dashRes.status === "fulfilled" && dashRes.value.success) {
         setDashboard(dashRes.value.data);
         setDashboardError(null);
         anySuccess = true;
+        if (dashRes.value._isDemo) usingDemoData = true;
       } else {
         const errMsg = dashRes.status === "rejected" ? dashRes.reason.message : "Failed to load stadium metrics";
         setDashboardError(errMsg);
@@ -90,6 +95,7 @@ export default function useDashboardData() {
         }
         setAlertsError(null);
         anySuccess = true;
+        if (alertsRes.value._isDemo) usingDemoData = true;
       } else {
         const errMsg = alertsRes.status === "rejected" ? alertsRes.reason.message : "Failed to load live AI directives";
         setAlertsError(errMsg);
@@ -100,13 +106,16 @@ export default function useDashboardData() {
         setAlertHistory(historyRes.value.history || []);
         setHistoryError(null);
         anySuccess = true;
+        if (historyRes.value._isDemo) usingDemoData = true;
       } else {
         const errMsg = historyRes.status === "rejected" ? historyRes.reason.message : "Failed to load historical directive log";
         setHistoryError(errMsg);
       }
 
-      // Update connection state
+      // Update connection & demo state
       setIsConnected(anySuccess);
+      setIsDemoMode(usingDemoData);
+
       if (anySuccess) {
         setError(null);
         setLastUpdated(new Date());
@@ -154,6 +163,7 @@ export default function useDashboardData() {
     loading,
     error,
     isConnected,
+    isDemoMode,
     lastUpdated,
     dashboardError,
     alertsError,

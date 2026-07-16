@@ -6,6 +6,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import useDashboardData from "../../hooks/useDashboardData";
+import DemoModeBanner from "../../components/shared/DemoModeBanner";
 
 import RiskConfidencePanel from "../../components/dashboard/cards/RiskConfidencePanel";
 import ActivityTimeline from "../../components/dashboard/alerts/ActivityTimeline";
@@ -21,6 +22,7 @@ export default function AIIntelligenceDashboard() {
     loading,
     error,
     isConnected,
+    isDemoMode,
     lastUpdated,
     dashboardError,
     alertsError,
@@ -32,7 +34,9 @@ export default function AIIntelligenceDashboard() {
     <DashboardLayout>
       <DashboardNavbar />
       <VuiBox py={3}>
-        {!isConnected && dashboard && (
+        {isDemoMode && <DemoModeBanner />}
+
+        {!isConnected && !isDemoMode && dashboard && (
           <VuiBox mb={3} p={2} sx={{ 
             backgroundColor: "rgba(239, 68, 68, 0.1)", 
             borderLeft: "4px solid #ef4444",
