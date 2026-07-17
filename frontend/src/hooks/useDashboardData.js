@@ -140,7 +140,7 @@ export default function useDashboardData() {
     }
   }, []);
 
-  // Initial fetch + interval
+  // Initial fetch + interval (with visibility-based pause for efficiency)
   useEffect(() => {
     mountedRef.current = true;
 
@@ -148,7 +148,11 @@ export default function useDashboardData() {
     fetchAll();
 
     // Set up the 10-second polling loop
-    const intervalId = setInterval(fetchAll, REFRESH_INTERVAL);
+    const intervalId = setInterval(() => {
+      // Skip polling when the browser tab is not visible (efficiency optimisation)
+      if (document.visibilityState === "hidden") return;
+      fetchAll();
+    }, REFRESH_INTERVAL);
 
     return () => {
       mountedRef.current = false;

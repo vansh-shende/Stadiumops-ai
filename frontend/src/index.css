@@ -4926,3 +4926,111 @@ a:focus-visible {
     transform: scale(1.2);
   }
 }
+
+/* =========================================================
+ *  ACCESSIBILITY — Skip Navigation Link
+ * ========================================================= */
+.skip-nav {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  padding: 12px 24px;
+  background: var(--color-info);
+  color: var(--text-inverse);
+  font-size: var(--font-base);
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  transition: top 150ms ease;
+}
+
+.skip-nav:focus {
+  top: 0;
+  outline: 3px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+ *  ACCESSIBILITY — Keyboard Focus Styles
+ * ========================================================= */
+*:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.25);
+}
+
+/* Remove focus outline for mouse users (only show for keyboard) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* =========================================================
+ *  ACCESSIBILITY — Screen Reader Only Utility
+ * ========================================================= */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =========================================================
+ *  ACCESSIBILITY — Prefers Reduced Motion
+ * =========================================================
+ *  Disables ALL animations and transitions when the user
+ *  has configured their OS to reduce motion.  This is an
+ *  essential accessibility requirement for users with
+ *  vestibular disorders.
+ * ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================
+ *  ACCESSIBILITY — ARIA Live Region Styles
+ * ========================================================= */
+[aria-live="polite"],
+[aria-live="assertive"] {
+  /* Visually present but optimized for screen readers */
+}
+
+/* =========================================================
+ *  ACCESSIBILITY — High Contrast Mode Support
+ * ========================================================= */
+@media (forced-colors: active) {
+  .status-dot,
+  .kpi-status-dot-pulse,
+  .ai-state-badge__dot {
+    forced-color-adjust: none;
+  }
+
+  .card {
+    border: 2px solid ButtonText;
+  }
+
+  .btn {
+    border: 1px solid ButtonText;
+  }
+}

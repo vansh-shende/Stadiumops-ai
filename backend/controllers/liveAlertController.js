@@ -9,6 +9,7 @@
  */
 
 const { getLatestAlerts, getAlertHistory } = require("../services/alertEngine");
+const logger = require("../utils/logger");
 
 /**
  * GET /api/live-alerts
@@ -29,7 +30,7 @@ async function getLiveAlerts(_req, res) {
     if (latest.status === "error") {
       return res.status(500).json({
         success: false,
-        error: latest.alerts[0] || "Failed to retrieve live alerts."
+        error: "Failed to retrieve live alerts. AI engine encountered an error."
       });
     }
 
@@ -40,9 +41,10 @@ async function getLiveAlerts(_req, res) {
       alerts: latest.alerts
     });
   } catch (err) {
+    logger.error("LiveAlerts", "Error fetching live alerts:", err.message);
     res.status(500).json({
       success: false,
-      error: err.message
+      error: "Failed to retrieve live alerts."
     });
   }
 }
@@ -60,9 +62,10 @@ async function getHistory(_req, res) {
       history
     });
   } catch (err) {
+    logger.error("LiveAlerts", "Error fetching alert history:", err.message);
     res.status(500).json({
       success: false,
-      error: err.message
+      error: "Failed to retrieve alert history."
     });
   }
 }

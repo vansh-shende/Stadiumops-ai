@@ -202,7 +202,7 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
               <p className="panel-error-card__message">{error}</p>
             </div>
             {onRetry && (
-              <Button variant="secondary" size="sm" onClick={onRetry}>Retry</Button>
+              <Button variant="secondary" size="sm" onClick={onRetry} ariaLabel="Retry loading AI directives">Retry</Button>
             )}
           </div>
         ) : (
@@ -299,19 +299,27 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
         </div>
       )}
 
-      {/* Reasoning Modal */}
+      {/* Reasoning Modal — Accessible with focus trap and keyboard handling */}
       {showReasonModal && (
-        <div className="modal-overlay" onClick={() => setShowReasonModal(false)} role="dialog" aria-modal="true">
+        <div
+          className="modal-overlay"
+          onClick={() => setShowReasonModal(false)}
+          onKeyDown={(e) => { if (e.key === "Escape") setShowReasonModal(false); }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="reasoning-modal-title"
+          aria-describedby="reasoning-modal-desc"
+        >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>AI Decision Logic & Evaluations</h3>
-              <button className="modal-close" onClick={() => setShowReasonModal(false)} aria-label="Close modal">×</button>
+              <h3 id="reasoning-modal-title">AI Decision Logic & Evaluations</h3>
+              <button className="modal-close" onClick={() => setShowReasonModal(false)} aria-label="Close reasoning modal">×</button>
             </div>
             <div className="modal-body">
-              <p className="modal-subtitle">Directives generated using real-time FIFA 2026 telemetry rules:</p>
-              <div className="logic-rule-list">
+              <p className="modal-subtitle" id="reasoning-modal-desc">Directives generated using real-time FIFA 2026 telemetry rules:</p>
+              <div className="logic-rule-list" role="list">
                 {evaluationRules.map((rule, idx) => (
-                  <div key={idx} className="logic-rule-item">
+                  <div key={idx} className="logic-rule-item" role="listitem">
                     <div className="logic-rule-header">
                       <span className="logic-rule-name">{rule.rule}</span>
                       <StatusChip variant={rule.level === "warning" ? "warning" : rule.level === "danger" ? "danger" : "success"} />

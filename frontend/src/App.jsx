@@ -96,18 +96,22 @@ export default function App() {
             />
           </>
         )}
-        <Suspense fallback={
-          <VuiBox display="flex" justifyContent="center" alignItems="center" height="100vh">
-            <VuiBox color="white" fontSize="lg" fontWeight="medium">
-              Loading Command Center...
+        <main id="main-content" role="main" aria-label="StadiumOps Dashboard Content">
+          <Suspense fallback={
+            <VuiBox display="flex" justifyContent="center" alignItems="center" height="100vh">
+              <VuiBox color="white" fontSize="lg" fontWeight="medium">
+                Loading Command Center...
+              </VuiBox>
             </VuiBox>
-          </VuiBox>
-        }>
-          <Switch location={currentLocation}>
-            {getRoutes(routes)}
-            <Redirect from="*" to="/dashboard" />
-          </Switch>
-        </Suspense>
+          }>
+            <div aria-live="polite" aria-atomic="true">
+              <Switch location={currentLocation}>
+                {getRoutes(routes)}
+                <Redirect from="*" to="/dashboard" />
+              </Switch>
+            </div>
+          </Suspense>
+        </main>
       </ThemeProvider>
     </SimulationProvider>
   );

@@ -33,7 +33,7 @@ async function testAI(_req, res) {
     logger.error("AI", "testAI failed:", err.message);
     res.status(500).json({
       success: false,
-      error: err.message,
+      error: "AI connectivity test failed. Please check the API configuration.",
     });
   }
 }
@@ -81,7 +81,7 @@ async function getAlerts(req, res) {
     logger.error("AI", "getAlerts failed:", err.message);
     res.status(500).json({
       success: false,
-      error: err.message
+      error: "Failed to generate tactical directives."
     });
   }
 }

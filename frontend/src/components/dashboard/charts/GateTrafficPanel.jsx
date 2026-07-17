@@ -73,14 +73,16 @@ export default memo(function GateTrafficPanel({ gates = [], loading, error, onRe
                 return (
                   <div 
                     key={gate.id} 
-                    className={`gate-minimal-card gate-minimal-card--${waitColor}`} 
+                    className={`gate-minimal-card gate-minimal-card--${waitColor}`}
+                    role="region"
+                    aria-label={`${gate.gate_name}: ${gate.crowd_density}% density, ${gate.wait_time} minute wait`}
                   >
                     <div className="gate-minimal-card__header">
                       <span className="gate-minimal-card__name">
                         {gate.gate_name.split(" - ")[0]}
                       </span>
                       <span className={`status-badge status-badge--${waitColor}`}>
-                        {isCritical && <span className="status-badge-pulse"></span>}
+                        {isCritical && <span className="status-badge-pulse" aria-hidden="true"></span>}
                         {gate.wait_time > THRESHOLDS.WAIT.MEDIUM ? "DELAYED" : "NOMINAL"}
                       </span>
                     </div>
@@ -90,7 +92,14 @@ export default memo(function GateTrafficPanel({ gates = [], loading, error, onRe
                     </div>
                     
                     <div className="gate-minimal-card__progress-wrap">
-                      <div className="gate-minimal-card__progress-bar">
+                      <div
+                        className="gate-minimal-card__progress-bar"
+                        role="progressbar"
+                        aria-valuenow={gate.crowd_density}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-label={`Crowd density: ${gate.crowd_density}%`}
+                      >
                         <div
                           className={`gate-minimal-card__progress-fill gate-minimal-card__progress-fill--${densityColor}`}
                           style={{ width: `${gate.crowd_density}%` }}
@@ -106,11 +115,12 @@ export default memo(function GateTrafficPanel({ gates = [], loading, error, onRe
             <div className="gate-trends-chart-card">
               <div className="trends-chart-header">
                 <span className="trends-chart-title">OPERATIONAL TRENDS</span>
-                <div className="trends-chart-tabs">
+                <div className="trends-chart-tabs" role="tablist" aria-label="Operational trend views">
                   <Button 
                     variant=""
                     className={`trends-tab-btn ${activeTab === "crowd" ? "active" : ""}`}
                     onClick={() => setActiveTab("crowd")}
+                    ariaLabel="Show crowd density trend"
                   >
                     CROWD DENSITY
                   </Button>
@@ -118,6 +128,7 @@ export default memo(function GateTrafficPanel({ gates = [], loading, error, onRe
                     variant=""
                     className={`trends-tab-btn ${activeTab === "wait" ? "active" : ""}`}
                     onClick={() => setActiveTab("wait")}
+                    ariaLabel="Show wait times trend"
                   >
                     WAIT TIMES
                   </Button>

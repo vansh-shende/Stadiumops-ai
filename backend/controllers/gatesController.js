@@ -116,7 +116,7 @@ async function handleGateAction(req, res) {
     logger.error("API", `Error executing gate action: ${err.message}`);
     res.status(500).json({
       success: false,
-      error: `Failed to execute gate action: ${err.message}`
+      error: "Failed to execute gate action. Please try again."
     });
   }
 }
