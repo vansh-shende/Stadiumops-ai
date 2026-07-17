@@ -92,6 +92,7 @@ export default React.memo(function ActivityTimeline({ history = [], loading, err
                     }
                   }}
                   aria-expanded={isExpanded}
+                  aria-label={`Time ${timeStr}. Status ${log.anomalyCount > 0 ? `${log.anomalyCount} anomalies` : "Nominal"}. Event: ${parsed.message}. Click to toggle details.`}
                 >
                   <div className="timeline-track">
                     <div className={`timeline-dot timeline-dot--${dotClass}`} aria-hidden="true" />

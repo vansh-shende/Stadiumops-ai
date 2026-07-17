@@ -117,7 +117,7 @@ export default memo(function StaffPanel({ staff = [], loading, error, onRetry })
                 </div>
 
                 {/* Right side donut chart */}
-                <div className="summary-chart-side" style={{ width: "90px", height: "90px" }}>
+                <div className="summary-chart-side" style={{ width: "90px", height: "90px" }} role="img" aria-label={`Staff deployment status: ${availableStaff} available, ${busyStaff} busy`}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -139,7 +139,7 @@ export default memo(function StaffPanel({ staff = [], loading, error, onRetry })
               </div>
             ) : (
               /* Detailed Staff Cards Grid */
-              <div className="ops-card-grid animate-fade-in" id="staff-body">
+              <div className="ops-card-grid animate-fade-in" id="staff-body" role="region" aria-label="Detailed Staff Allocation list">
                 {staff.map((member) => {
                   const statusColor =
                     member.status === "Available"
@@ -153,6 +153,8 @@ export default memo(function StaffPanel({ staff = [], loading, error, onRetry })
                     <div 
                       key={member.id} 
                       className={`ops-card ops-card--border-${statusColor}`}
+                      role="region"
+                      aria-label={`${member.staff_name} in ${member.zone}: ${member.status}`}
                     >
                       <div className="ops-card__staff-header">
                         <div className="ops-avatar" aria-hidden="true">

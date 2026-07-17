@@ -107,7 +107,7 @@ export default memo(function InventoryPanel({ inventory = [], loading, error, on
                 </div>
 
                 {/* Right side donut chart */}
-                <div className="summary-chart-side" style={{ width: "90px", height: "90px" }}>
+                <div className="summary-chart-side" style={{ width: "90px", height: "90px" }} role="img" aria-label={`Inventory health status: ${inventoryHealth}% healthy`}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -129,7 +129,7 @@ export default memo(function InventoryPanel({ inventory = [], loading, error, on
               </div>
             ) : (
               /* Detailed Concession Cards Grid */
-              <div className="ops-card-grid animate-fade-in" id="inventory-body">
+              <div className="ops-card-grid animate-fade-in" id="inventory-body" role="region" aria-label="Detailed Concession Stock Levels">
                 {inventory.map((item) => {
                   const tier = qtyTier(item.quantity);
                   const statusCls = tier === "low" ? "danger" : tier === "medium" ? "warning" : "success";
@@ -138,6 +138,8 @@ export default memo(function InventoryPanel({ inventory = [], loading, error, on
                     <div 
                       key={item.id} 
                       className={`ops-card ops-card--border-${statusCls}`}
+                      role="region"
+                      aria-label={`${item.stand_name}: ${item.item_name}, quantity ${item.quantity} units, stock level ${tier}`}
                     >
                       <div className="ops-card__header">
                         <span className="ops-card__stand">{item.stand_name}</span>

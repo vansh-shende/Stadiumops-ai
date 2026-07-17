@@ -281,13 +281,21 @@ export default React.memo(function StadiumOverview({
       </div>
 
       {selectedGate && (
-        <div className="modal-overlay" onClick={() => setSelectedGate(null)}>
+        <div
+          className="modal-overlay"
+          onClick={() => setSelectedGate(null)}
+          onKeyDown={(e) => { if (e.key === "Escape") setSelectedGate(null); }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="stadium-modal-title"
+          aria-describedby="stadium-modal-desc"
+        >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>⚡ Operations Command — {selectedGate.gate_name.split(" - ")[0]}</h3>
-              <button className="modal-close" onClick={() => setSelectedGate(null)}>×</button>
+              <h3 id="stadium-modal-title">⚡ Operations Command — {selectedGate.gate_name.split(" - ")[0]}</h3>
+              <button className="modal-close" onClick={() => setSelectedGate(null)} aria-label="Close command dialog">×</button>
             </div>
-            <div className="modal-body">
+            <div className="modal-body" id="stadium-modal-desc">
               <div style={{ marginBottom: "16px" }}>
                 <span className="telemetry-label">Status Overview:</span>
                 <div style={{ display: "flex", gap: "16px", marginTop: "6px" }}>
@@ -314,6 +322,7 @@ export default React.memo(function StadiumOverview({
                   style={{ width: "100%", textAlign: "left", justifyContent: "flex-start", padding: "10px 16px" }}
                   onClick={() => handleActionClick("open_auxiliary")}
                   disabled={submittingAction}
+                  ariaLabel={`Open auxiliary turnstiles for ${selectedGate.gate_name.split(" - ")[0]}`}
                 >
                   {submittingAction === "open_auxiliary" ? "⏳ Opening Turnstiles..." : "🔓 Open Auxiliary Turnstiles"}
                 </Button>
@@ -323,6 +332,7 @@ export default React.memo(function StadiumOverview({
                   style={{ width: "100%", textAlign: "left", justifyContent: "flex-start", padding: "10px 16px", backgroundColor: "rgba(0, 242, 254, 0.1)", borderColor: "rgba(0, 242, 254, 0.4)", color: "var(--color-info)" }}
                   onClick={() => handleActionClick("deploy_stewards")}
                   disabled={submittingAction}
+                  ariaLabel={`Deploy response stewards to ${selectedGate.gate_name.split(" - ")[0]}`}
                 >
                   {submittingAction === "deploy_stewards" ? "⏳ Deploying Crew..." : "👥 Deploy Response Stewards"}
                 </Button>
@@ -337,6 +347,7 @@ export default React.memo(function StadiumOverview({
                   }}
                   onClick={() => handleActionClick("toggle_lockdown")}
                   disabled={submittingAction}
+                  ariaLabel={selectedGate.wait_time === 99 ? `Lift lockdown state for ${selectedGate.gate_name.split(" - ")[0]}` : `Activate lockdown for ${selectedGate.gate_name.split(" - ")[0]}`}
                 >
                   {submittingAction === "toggle_lockdown" ? "⏳ Processing..." : selectedGate.wait_time === 99 ? "🔓 Lift Lockdown State" : "🚨 Activate Gate Lockdown"}
                 </Button>
