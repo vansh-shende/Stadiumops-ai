@@ -44,6 +44,7 @@ export default memo(function QuickActions() {
               onClick={() => handleAction(action.key)}
               disabled={isSimulating && !isActive}
               id={`action-${action.key}`}
+              aria-label={`Trigger simulation: ${action.label}. ${action.description}`}
             >
               <span className="quick-action-btn__icon" aria-hidden="true">{action.icon}</span>
               <div className="quick-action-btn__text">
