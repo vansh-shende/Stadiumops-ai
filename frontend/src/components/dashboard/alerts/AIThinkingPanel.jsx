@@ -6,6 +6,10 @@ import Badge from "../../shared/ui/Badge";
 import Button from "../../shared/ui/Button";
 import StatusChip from "../../shared/ui/StatusChip";
 
+/**
+ * Ordered AI operational states for the tactical commander pipeline.
+ * @type {Array<{key: string, label: string, color: string, icon: string}>}
+ */
 const AI_STATES = [
   { key: "MONITORING", label: "Monitoring", color: "var(--color-success)", icon: "◉" },
   { key: "ANALYZING", label: "Analyzing", color: "var(--color-warning)", icon: "◎" },
@@ -14,6 +18,14 @@ const AI_STATES = [
   { key: "DEPLOYING", label: "Deploying", color: "var(--color-danger)", icon: "▶" },
 ];
 
+/**
+ * Custom hook that produces a character-by-character typing animation.
+ * Resets and replays whenever the source text changes.
+ *
+ * @param {string} text - The full text to animate.
+ * @param {number} [speed=18] - Milliseconds between each character reveal.
+ * @returns {{ displayedText: string, isTyping: boolean }}
+ */
 function useTypingAnimation(text, speed = 18) {
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -40,6 +52,21 @@ function useTypingAnimation(text, speed = 18) {
   return { displayedText, isTyping };
 }
 
+/**
+ * AIThinkingPanel — Real-time AI Tactical Commander display panel.
+ *
+ * Visualises the current AI decision pipeline phase, renders a confidence
+ * ring, shows the latest directive with a typing animation, and exposes
+ * a reasoning modal explaining the underlying evaluation rules.
+ *
+ * @param {Object}   props
+ * @param {Object}   props.liveAlerts  - Live alert payload from the polling service.
+ * @param {Date}     props.lastUpdated - Timestamp of the most recent data poll.
+ * @param {boolean}  props.loading     - Whether data is currently being fetched.
+ * @param {string}   props.error       - Error message if the fetch failed.
+ * @param {Function} props.onRetry     - Callback invoked when the user clicks Retry.
+ * @returns {React.ReactElement} The rendered AI Thinking Panel.
+ */
 export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading, error, onRetry }) {
   const [countdown, setCountdown] = useState(10);
   const [aiPhase, setAiPhase] = useState(0);
@@ -47,11 +74,12 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
   const [scanAngle, setScanAngle] = useState(0);
   const { activeSimulation, isSimulating } = useSimulation();
 
-  // Countdown timer synced with polls
+  /* Reset countdown when fresh data arrives. */
   useEffect(() => {
     setCountdown(10);
   }, [lastUpdated]);
 
+  /* Tick the countdown every second. */
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown((prev) => (prev <= 1 ? 10 : prev - 1));
@@ -59,7 +87,7 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
     return () => clearInterval(timer);
   }, []);
 
-  // Scan animation
+  /* Animate the scan-ring rotation at ~33 fps. */
   useEffect(() => {
     const frame = setInterval(() => {
       setScanAngle((a) => (a + 2) % 360);
@@ -67,7 +95,7 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
     return () => clearInterval(frame);
   }, []);
 
-  // AI Phase cycling synchronized with countdown
+  /* Determine the current AI phase from countdown and alert state. */
   useEffect(() => {
     if (isSimulating) return;
 
@@ -79,17 +107,17 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
     const alerts = liveAlerts?.alerts || [];
     const hasCritical = alerts.some((a) => a.startsWith("[CRITICAL]"));
     if (hasCritical) {
-      setAiPhase(4); // Keep in Deploying
+      setAiPhase(4);
       return;
     }
 
     const isProcessing = liveAlerts?.status === "processing";
     if (isProcessing) {
-      setAiPhase(1); // Keep in Analyzing
+      setAiPhase(1);
       return;
     }
 
-    // Map 10s countdown to 5 sequential phases
+    /* Map 10-second countdown to 5 sequential phases. */
     let phase = 0;
     if (countdown >= 9) phase = 0;
     else if (countdown >= 7) phase = 1;
@@ -100,7 +128,7 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
     setAiPhase(phase);
   }, [countdown, liveAlerts, loading, isSimulating]);
 
-  // Override AI state during simulation
+  /* Override AI phase when a simulation is active. */
   useEffect(() => {
     if (isSimulating && activeSimulation) {
       const stateIdx = AI_STATES.findIndex(s => s.key === activeSimulation.aiState);
@@ -110,7 +138,7 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
 
   const currentState = AI_STATES[aiPhase] || AI_STATES[0];
 
-  // Extract directive
+  /* Extract and parse the latest directive for display. */
   const alertsList = liveAlerts?.alerts || [];
   const latestAlert = isSimulating ? activeSimulation?.directive : alertsList[0];
   const parsed = latestAlert ? parseAlert(latestAlert) : null;
@@ -120,17 +148,24 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
     parsed?.message || "All systems operating within normal parameters. Continuous monitoring active."
   );
 
-  // Confidence calculation
+  /* Compute confidence score from anomaly count or simulation override. */
   const confidenceScore = liveAlerts?.anomalyCount !== undefined
     ? Math.max(70, 98 - (liveAlerts.anomalyCount * 2))
     : 98;
-  const confidenceForDisplay = isSimulating ? Math.max(55, 95 - (activeSimulation?.riskOverride || 0) * 0.4) : confidenceScore;
+  const confidenceForDisplay = isSimulating
+    ? Math.max(55, 95 - (activeSimulation?.riskOverride || 0) * 0.4)
+    : confidenceScore;
 
-  // SVG confidence ring
+  /* SVG confidence ring geometry. */
   const circumference = 2 * Math.PI * 40;
   const strokeDashoffset = circumference - (confidenceForDisplay / 100) * circumference;
 
-  // Estimated impact
+  /**
+   * Derives a human-readable estimated-impact summary from the directive message.
+   *
+   * @param {string|null} msg - The directive message text.
+   * @returns {string} A concise impact summary string.
+   */
   const getEstimatedImpact = (msg) => {
     if (!msg) return "System Load: Balanced | Flow: Nominal";
     if (msg.includes("Gate") || msg.includes("crowd")) return "Est. Latency: -15% | Sector: Rebalancing";
@@ -138,6 +173,10 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
     return "Operations: Optimizing | Capacity: Stable";
   };
 
+  /**
+   * Static evaluation rules displayed in the reasoning modal.
+   * @type {Array<{rule: string, result: string, level: string}>}
+   */
   const evaluationRules = [
     { rule: "Wait Time Threshold Check", result: "Gate wait times analyzed; critical flags at hotspot gates.", level: "warning" },
     { rule: "Crowd Density Distribution", result: "Average density calculated. Peak capacity zones identified.", level: "warning" },
@@ -232,7 +271,11 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
                     style={{
                       strokeDasharray: circumference,
                       strokeDashoffset: strokeDashoffset,
-                      stroke: confidenceForDisplay >= 80 ? "var(--color-success)" : confidenceForDisplay >= 60 ? "var(--color-warning)" : "var(--color-danger)"
+                      stroke: confidenceForDisplay >= 80
+                        ? "var(--color-success)"
+                        : confidenceForDisplay >= 60
+                          ? "var(--color-warning)"
+                          : "var(--color-danger)"
                     }}
                   />
                 </svg>
@@ -299,7 +342,7 @@ export default memo(function AIThinkingPanel({ liveAlerts, lastUpdated, loading,
         </div>
       )}
 
-      {/* Reasoning Modal — Accessible with focus trap and keyboard handling */}
+      {/* Reasoning Modal */}
       {showReasonModal && (
         <div
           className="modal-overlay"

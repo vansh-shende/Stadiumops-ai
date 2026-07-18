@@ -6,25 +6,51 @@ import Card from "../../shared/ui/Card";
 import Button from "../../shared/ui/Button";
 import StatusChip from "../../shared/ui/StatusChip";
 
+/**
+ * Static SVG coordinate map for each named stadium gate.
+ * Maps gate display names to their position and label anchor on the SVG map.
+ *
+ * @type {Record<string, {x: number, y: number, labelX: number, labelY: number}>}
+ */
 const GATE_COORDS = {
   "Gate A - Main Entrance": { x: 120, y: 70, labelX: 80, labelY: 50 },
   "Gate B - North Stand": { x: 250, y: 50, labelX: 250, labelY: 30 },
   "Gate C - East Wing": { x: 380, y: 70, labelX: 420, labelY: 50 },
   "Gate D - South Stand": { x: 380, y: 210, labelX: 420, labelY: 230 },
   "Gate E - VIP Entrance": { x: 250, y: 230, labelX: 250, labelY: 265 },
-  "Gate F - West Pavilion": { x: 120, y: 210, labelX: 80, labelY: 230 }
+  "Gate F - West Pavilion": { x: 120, y: 210, labelX: 80, labelY: 230 },
 };
 
+/** Horizontal centre of the SVG viewport. */
 const CENTER_X = 250;
+
+/** Vertical centre of the SVG viewport. */
 const CENTER_Y = 145;
 
+/**
+ * StadiumOverview — Interactive digital-twin map of the stadium.
+ *
+ * Renders an SVG-based operations map with gate nodes colour-coded by crowd
+ * density and wait time.  A telemetry sidebar shows real-time health, capacity,
+ * anomaly, and weather metrics.  Clicking a gate opens a command modal for
+ * operational actions (open turnstiles, deploy stewards, toggle lockdown).
+ *
+ * @param {Object}   props
+ * @param {Array}    props.gates            - Array of gate data objects.
+ * @param {Object}   props.liveAlerts       - Live alert payload with anomaly counts.
+ * @param {boolean}  props.isConnected      - Whether the data stream is connected.
+ * @param {boolean}  props.loading          - Whether gate data is being fetched.
+ * @param {string}   props.error            - Error message if the fetch failed.
+ * @param {Function} props.onActionComplete - Callback after a gate action succeeds.
+ * @returns {React.ReactElement} The rendered stadium overview panel.
+ */
 export default React.memo(function StadiumOverview({
   gates = [],
   liveAlerts,
   isConnected,
   loading,
   error,
-  onActionComplete
+  onActionComplete,
 }) {
   const [selectedGate, setSelectedGate] = useState(null);
   const [submittingAction, setSubmittingAction] = useState(null);
@@ -66,12 +92,22 @@ export default React.memo(function StadiumOverview({
 
   const criticalAlertCount = liveAlerts?.anomalyCount || 0;
 
+  /**
+   * Selects a gate and resets any previous action feedback.
+   *
+   * @param {Object} gate - The gate data object to select.
+   */
   const handleGateSelect = (gate) => {
     setSelectedGate(gate);
     setActionSuccess(null);
     setActionError(null);
   };
 
+  /**
+   * Executes an operational command against the selected gate via the API.
+   *
+   * @param {string} action - The action identifier (e.g. "open_auxiliary").
+   */
   const handleActionClick = async (action) => {
     if (!selectedGate) return;
     setSubmittingAction(action);
@@ -94,7 +130,11 @@ export default React.memo(function StadiumOverview({
       setSubmittingAction(null);
     }
   };
-  
+
+  /**
+   * Computes an overall stadium health score (0–100) based on connection
+   * status, anomaly count, density, and wait-time thresholds.
+   */
   let healthScore = 100;
   if (!isConnected) {
     healthScore = 0;
@@ -139,7 +179,7 @@ export default React.memo(function StadiumOverview({
             {/* Outer structure */}
             <rect x="90" y="40" width="320" height="200" rx="100" className="stadium-outer-ring" />
             <rect x="120" y="70" width="260" height="140" rx="70" className="stadium-inner-ring" />
-            
+
             {/* Pitch */}
             <rect x="170" y="110" width="160" height="70" className="stadium-pitch" />
             <circle cx={CENTER_X} cy={CENTER_Y} r="20" className="stadium-pitch-center" />
@@ -156,12 +196,16 @@ export default React.memo(function StadiumOverview({
               <circle cx={CENTER_X} cy={CENTER_Y} r="100" className="radar-ring radar-ring--2" />
             </g>
 
-            {/* Data flow lines from gates to center */}
+            {/* Data flow lines from gates to centre */}
             {gates.map((gate) => {
               const coords = GATE_COORDS[gate.gate_name];
               if (!coords) return null;
               const dTier = densityTier(gate.crowd_density);
-              const flowColor = dTier === "high" ? "var(--color-danger)" : dTier === "medium" ? "var(--color-warning)" : "var(--color-success)";
+              const flowColor = dTier === "high"
+                ? "var(--color-danger)"
+                : dTier === "medium"
+                  ? "var(--color-warning)"
+                  : "var(--color-success)";
               return (
                 <line
                   key={`flow-${gate.id}`}
@@ -173,7 +217,7 @@ export default React.memo(function StadiumOverview({
               );
             })}
 
-            {/* Render gates */}
+            {/* Gate nodes */}
             {gates.map((gate) => {
               const coords = GATE_COORDS[gate.gate_name] || { x: 250, y: 150, labelX: 250, labelY: 150 };
               const dTier = densityTier(gate.crowd_density);
@@ -280,6 +324,7 @@ export default React.memo(function StadiumOverview({
         </div>
       </div>
 
+      {/* Gate Command Modal */}
       {selectedGate && (
         <div
           className="modal-overlay"
@@ -301,13 +346,19 @@ export default React.memo(function StadiumOverview({
                 <div style={{ display: "flex", gap: "16px", marginTop: "6px" }}>
                   <div className="telemetry-block" style={{ flex: 1, padding: "8px" }}>
                     <span className="telemetry-label">Density</span>
-                    <span className={`telemetry-value text-${selectedGate.crowd_density >= THRESHOLDS.DENSITY.MEDIUM ? "danger" : selectedGate.crowd_density >= THRESHOLDS.DENSITY.LOW ? "warning" : "success"}`} style={{ fontSize: "18px" }}>
+                    <span
+                      className={`telemetry-value text-${selectedGate.crowd_density >= THRESHOLDS.DENSITY.MEDIUM ? "danger" : selectedGate.crowd_density >= THRESHOLDS.DENSITY.LOW ? "warning" : "success"}`}
+                      style={{ fontSize: "18px" }}
+                    >
                       {selectedGate.crowd_density}%
                     </span>
                   </div>
                   <div className="telemetry-block" style={{ flex: 1, padding: "8px" }}>
                     <span className="telemetry-label">Wait Time</span>
-                    <span className={`telemetry-value text-${selectedGate.wait_time >= THRESHOLDS.WAIT.MEDIUM ? "danger" : selectedGate.wait_time >= 10 ? "warning" : "success"}`} style={{ fontSize: "18px" }}>
+                    <span
+                      className={`telemetry-value text-${selectedGate.wait_time >= THRESHOLDS.WAIT.MEDIUM ? "danger" : selectedGate.wait_time >= 10 ? "warning" : "success"}`}
+                      style={{ fontSize: "18px" }}
+                    >
                       {selectedGate.wait_time}m
                     </span>
                   </div>
@@ -316,7 +367,7 @@ export default React.memo(function StadiumOverview({
 
               <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "20px" }}>
                 <span className="telemetry-label">Operational Commands:</span>
-                
+
                 <Button
                   variant="primary"
                   style={{ width: "100%", textAlign: "left", justifyContent: "flex-start", padding: "10px 16px" }}
@@ -339,11 +390,11 @@ export default React.memo(function StadiumOverview({
 
                 <Button
                   variant="secondary"
-                  style={{ 
+                  style={{
                     width: "100%", textAlign: "left", justifyContent: "flex-start", padding: "10px 16px",
                     backgroundColor: selectedGate.wait_time === 99 ? "rgba(0, 245, 160, 0.1)" : "rgba(255, 0, 85, 0.1)",
                     borderColor: selectedGate.wait_time === 99 ? "rgba(0, 245, 160, 0.4)" : "rgba(255, 0, 85, 0.4)",
-                    color: selectedGate.wait_time === 99 ? "var(--color-success)" : "var(--color-danger)"
+                    color: selectedGate.wait_time === 99 ? "var(--color-success)" : "var(--color-danger)",
                   }}
                   onClick={() => handleActionClick("toggle_lockdown")}
                   disabled={submittingAction}

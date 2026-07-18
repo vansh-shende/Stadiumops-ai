@@ -18,6 +18,11 @@ const logger = require("../utils/logger");
  * GET /api/test-ai
  * Sends a fixed prompt to Gemini and returns the response
  * to confirm the integration is working.
+ *
+ * @async
+ * @param {import("express").Request} _req - Express request object (unused).
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response with status or error.
  */
 async function testAI(_req, res) {
   try {
@@ -41,6 +46,11 @@ async function testAI(_req, res) {
 /**
  * POST /api/alerts
  * Receives anomaly JSON, generates a tactical prompt, gets Gemini directives, and returns them.
+ *
+ * @async
+ * @param {import("express").Request} req - Express request object containing anomaly data.
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response with directives or error.
  */
 async function getAlerts(req, res) {
   try {

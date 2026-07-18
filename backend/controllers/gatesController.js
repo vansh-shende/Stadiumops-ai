@@ -15,6 +15,11 @@ const { injectCustomAction } = require("../services/alertEngine");
 /**
  * GET /api/gates
  * Returns all Gate_Traffic records ordered by updated_at DESC.
+ *
+ * @async
+ * @param {import("express").Request} _req - Express request object (unused).
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response with success indicator and gate data.
  */
 async function getAllGates(_req, res) {
   try {
@@ -39,6 +44,11 @@ async function getAllGates(_req, res) {
 /**
  * POST /api/gates/action
  * Triggers a manual gate operational command (turnstiles, stewards, lockdown).
+ *
+ * @async
+ * @param {import("express").Request} req - Express request object.
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response with results or error status.
  */
 async function handleGateAction(req, res) {
   const { gateName, action } = req.body;

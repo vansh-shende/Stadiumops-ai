@@ -9,6 +9,12 @@ export default defineConfig({
       include: /\.(js|jsx)$/,
     }),
   ],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.js',
+    css: false,
+  },
   resolve: {
     alias: {
       assets: path.resolve(__dirname, 'src/assets'),

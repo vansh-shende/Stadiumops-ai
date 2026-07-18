@@ -15,6 +15,20 @@ const RISK_TREND_DATA = [
   { time: "20:30", risk: 52 }
 ];
 
+/**
+ * RiskConfidencePanel — Displays calculated operational risk scores and metrics.
+ *
+ * Utilizes a circular visual gauge indicator, historical risk sparkline trends,
+ * and key bullet insights derived from real-time staff, inventory, and gate queues.
+ *
+ * @param {Object} props
+ * @param {Object} props.dashboard - Full dashboard metrics state object.
+ * @param {boolean} props.isConnected - Connection state flag of the API stream.
+ * @param {boolean} props.loading - Loading state flag.
+ * @param {string} props.error - Error message if telemetry cannot be retrieved.
+ * @param {Function} [props.onRetry] - Action trigger to retry offline insights.
+ * @returns {React.ReactElement} The rendered RiskConfidencePanel.
+ */
 export default memo(function RiskConfidencePanel({ dashboard, isConnected, loading, error, onRetry }) {
   if (loading) {
     return (

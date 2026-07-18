@@ -1,13 +1,11 @@
 /**
- * =========================================================
- *  StadiumOps AI — Anomaly Controller
- * =========================================================
+ * @module anomalyController
+ * @description Handles HTTP requests for the stadium anomalies endpoint.
  *
- *  Responsibility:
- *    Handle HTTP requests for the stadium anomalies endpoint.
- *    1. Fetches the latest stadium data snapshot using stadiumDataService.
- *    2. Evaluates the snapshot against the rule engine.
- *    3. Returns the detected anomalies in JSON format.
+ * Workflow:
+ *   1. Fetches the latest stadium data snapshot via {@link stadiumDataService}.
+ *   2. Evaluates the snapshot against the rule engine.
+ *   3. Returns detected anomalies in a standardised JSON envelope.
  */
 
 const { getStadiumSnapshot } = require("../services/stadiumDataService");
@@ -16,30 +14,33 @@ const logger = require("../utils/logger");
 
 /**
  * GET /api/anomalies
- * Evaluates rules against live stadium data and returns detected anomalies.
+ *
+ * Retrieves the current stadium data snapshot, runs it through the static
+ * rule engine, and responds with the resulting anomaly report.
+ *
+ * @async
+ * @param {import("express").Request}  _req - Express request (unused).
+ * @param {import("express").Response} res  - Express response.
+ * @returns {Promise<void>} Resolves after the response is sent.
  */
 async function getAnomalies(_req, res) {
   try {
-    // 1. Fetch current stadium data snapshot
     const snapshot = await getStadiumSnapshot();
-
-    // 2. Pass it to the rule engine to run static checks
     const anomalyReport = detectAnomalies(snapshot);
 
-    // 3. Return the evaluation result
     res.status(200).json({
       success: true,
-      data: anomalyReport
+      data: anomalyReport,
     });
   } catch (err) {
     logger.error("API", "Error getting stadium anomalies:", err.message);
     res.status(500).json({
       success: false,
-      error: "Failed to perform operational anomaly detection."
+      error: "Failed to perform operational anomaly detection.",
     });
   }
 }
 
 module.exports = {
-  getAnomalies
+  getAnomalies,
 };

@@ -14,6 +14,11 @@ const logger = require("../utils/logger");
 /**
  * GET /api/staff
  * Returns all Staff_Logistics records ordered by updated_at DESC.
+ *
+ * @async
+ * @param {import("express").Request} _req - Express request object (unused).
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response with all staff logistics data.
  */
 async function getAllStaff(_req, res) {
   try {

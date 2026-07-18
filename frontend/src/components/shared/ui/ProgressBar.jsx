@@ -1,5 +1,19 @@
 import React from "react";
 
+/**
+ * ProgressBar — Horizontal progression layout representing metrics up to a max value.
+ *
+ * Renders a progress container with appropriate ARIA roles and computed percentage widths.
+ * Clamps input values to a minimum of 0 and a maximum of 100%.
+ *
+ * @param {Object} props
+ * @param {number} props.value - The current fill value of the progress bar.
+ * @param {number} [props.max=100] - The ceiling value representing 100%.
+ * @param {"info"|"danger"|"warning"|"success"} [props.variant="info"] - Color theme variant.
+ * @param {string} [props.className=""] - Additional class name for container custom styling.
+ * @param {string} [props.barClass="progress-bar"] - Base CSS prefix for styling structure.
+ * @returns {React.ReactElement} The rendered ProgressBar component.
+ */
 export default React.memo(function ProgressBar({
   value,
   max = 100,

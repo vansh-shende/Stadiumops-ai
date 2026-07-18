@@ -14,6 +14,11 @@ const logger = require("../utils/logger");
 /**
  * GET /api/stadium
  * Returns a full operational snapshot of all stadium data.
+ *
+ * @async
+ * @param {import("express").Request} _req - Express request object (unused).
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response containing the snapshot.
  */
 async function getSnapshot(_req, res) {
   try {

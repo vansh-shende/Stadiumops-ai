@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 
+/**
+ * AnimatedNumber — Smoothly animates a numeric value from its previous state to its new state.
+ *
+ * Uses requestAnimationFrame to transition numbers over a 450ms duration,
+ * preserving any surrounding non-numeric formatting (e.g. percentages or commas).
+ *
+ * @param {Object} props
+ * @param {string|number} props.value - The target numeric value to animate to.
+ * @returns {React.ReactElement} The rendered animated number span.
+ */
 function AnimatedNumber({ value }) {
   const [displayVal, setDisplayVal] = useState(value);
   const prevValRef = useRef(value);
@@ -44,6 +54,13 @@ function AnimatedNumber({ value }) {
   return <span className="animated-metric">{displayVal}</span>;
 }
 
+/**
+ * MiniSparkline — Renders a small inline SVG sparkline graph indicating recent trends.
+ *
+ * @param {Object} props
+ * @param {"success"|"danger"|"warning"} [props.variant="success"] - The visual style variant.
+ * @returns {React.ReactElement} The rendered SVG sparkline.
+ */
 function MiniSparkline({ variant = "success" }) {
   const paths = {
     success: "M0,15 L8,17 L16,9 L24,12 L32,4 L40,6",
@@ -59,6 +76,24 @@ function MiniSparkline({ variant = "success" }) {
   );
 }
 
+/**
+ * MetricCard — A structured component displaying primary KPIs with a mini trend line.
+ *
+ * Displays a pulse badge indicator, a dynamic animated value, and a small trend line.
+ *
+ * @param {Object} props
+ * @param {string} [props.id] - Optional HTML identifier.
+ * @param {string} props.label - Accessible label of the metric.
+ * @param {string|number} props.value - Numeric display value.
+ * @param {string} props.icon - Emoji or character icon.
+ * @param {"success"|"warning"|"danger"} [props.variant="success"] - Main indicator status variant.
+ * @param {string} props.statusLabel - Text shown on the badge.
+ * @param {string} props.trend - Percentage or rate of change (e.g. "+12%").
+ * @param {"up"|"down"|"neutral"} [props.trendDirection="neutral"] - Trend indicator direction.
+ * @param {"success"|"warning"|"danger"|"neutral"} [props.trendVariant="success"] - Color theme of the trend label.
+ * @param {string} [props.className=""] - Additional class names.
+ * @returns {React.ReactElement} The rendered KPI metric card.
+ */
 export default React.memo(function MetricCard({
   id,
   label,

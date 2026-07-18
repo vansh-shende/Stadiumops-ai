@@ -16,6 +16,11 @@ const logger = require("../utils/logger");
  * GET /api/dashboard
  * Returns a unified JSON object containing gates, inventory,
  * staff, and a generatedAt timestamp.
+ *
+ * @async
+ * @param {import("express").Request} _req - Express request object (unused).
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response with success indicator and unified dashboard data.
  */
 async function getDashboard(_req, res) {
   try {

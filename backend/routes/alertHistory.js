@@ -3,12 +3,9 @@
  *  StadiumOps AI — Alert History Routes
  * =========================================================
  *
- *  Responsibility:
- *    Define HTTP route mappings for alert history.
- *    Delegates processing to controllers/liveAlertController.js.
- *
- *  Endpoints:
- *    GET /api/alert-history — Returns the latest 50 alerts in-memory, newest first.
+ * @module routes/alertHistory
+ * @requires express
+ * @requires controllers/liveAlertController
  */
 
 const express = require("express");

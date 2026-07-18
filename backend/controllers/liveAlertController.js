@@ -14,6 +14,11 @@ const logger = require("../utils/logger");
 /**
  * GET /api/live-alerts
  * Returns the cached AI command directives or indicating generating status.
+ *
+ * @async
+ * @param {import("express").Request} _req - Express request object (unused).
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response with live alerts or status indicators.
  */
 async function getLiveAlerts(_req, res) {
   try {
@@ -52,6 +57,11 @@ async function getLiveAlerts(_req, res) {
 /**
  * GET /api/alert-history
  * Returns the list of the latest 50 alert reports, ordered newest first.
+ *
+ * @async
+ * @param {import("express").Request} _req - Express request object (unused).
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response with historical alerts.
  */
 async function getHistory(_req, res) {
   try {

@@ -14,6 +14,11 @@ const logger = require("../utils/logger");
 /**
  * GET /api/inventory
  * Returns all Concession_Inventory records ordered by updated_at DESC.
+ *
+ * @async
+ * @param {import("express").Request} _req - Express request object (unused).
+ * @param {import("express").Response} res - Express response object.
+ * @returns {Promise<void>} Sends JSON response with all concession inventory data.
  */
 async function getAllInventory(_req, res) {
   try {

@@ -1,5 +1,23 @@
 import React from "react";
 
+/**
+ * CameraCard — Renders an interactive feed viewport container for CCTV camera displays.
+ *
+ * Implements camera metadata overlays, a scanlines grid, flickering/noise elements,
+ * recording status dots, and status indicator bars.
+ *
+ * @param {Object} props
+ * @param {string} props.camId - Identifier code of the camera (e.g. "CAM-01").
+ * @param {string} props.label - Friendly name label of the camera feed.
+ * @param {string} props.imageSrc - URL/source path to CCTV frame image.
+ * @param {"success"|"warning"|"danger"} [props.status="success"] - Online status of feed.
+ * @param {string} [props.statusLabel] - Text label overrides for feed status.
+ * @param {string} props.timestamp - CCTV display timestamp string.
+ * @param {boolean} [props.activeOverlay=false] - Whether to render active security overlay.
+ * @param {string} [props.overlayLabel] - Text label shown inside overlay.
+ * @param {boolean} [props.rec=true] - Whether to display recording indicators.
+ * @returns {React.ReactElement} The rendered CameraCard component.
+ */
 export default React.memo(function CameraCard({
   camId,
   label,

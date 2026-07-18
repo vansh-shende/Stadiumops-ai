@@ -3,6 +3,18 @@ import { classifyAlert, parseAlert } from "../../../utils/helpers";
 import Card from "../../shared/ui/Card";
 import Badge from "../../shared/ui/Badge";
 
+/**
+ * ActivityTimeline — Displays a chronological audit log of operational events.
+ *
+ * Integrates status indicator markers, time metrics, and custom collapsible detail cards
+ * detailing sensor classifications and safety recommendations.
+ *
+ * @param {Object} props
+ * @param {Array<Object>} [props.history=[]] - List of historical log entities.
+ * @param {boolean} props.loading - Processing state flag.
+ * @param {string} props.error - Error details if retrieval fails.
+ * @returns {React.ReactElement} The rendered ActivityTimeline.
+ */
 export default React.memo(function ActivityTimeline({ history = [], loading, error }) {
   const [expandedIndex, setExpandedIndex] = useState(null);
 

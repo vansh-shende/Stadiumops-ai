@@ -1,6 +1,22 @@
 import React from "react";
 import ProgressBar from "./ProgressBar";
 
+/**
+ * PredictionCard — A modular presentation card that outputs predictive details.
+ *
+ * Shows location, risk severity badges, progress indicators, action plans, and ETA countdowns.
+ *
+ * @param {Object} props
+ * @param {string} props.location - Gate/location name (e.g. "Gate A").
+ * @param {string} props.badgeText - Risk severity code (e.g. "HIGH", "MED").
+ * @param {string} props.metricLabel - Description of metric being monitored (e.g. "Congestion Probability").
+ * @param {number} props.probability - Numeric percentage probability (0-100).
+ * @param {string} props.action - Recommanded tactical resolution directive.
+ * @param {string} props.reduction - Projected impact reduction rate (e.g. "30%").
+ * @param {string} [props.eta] - Time remaining before anomaly reaches critical threshold.
+ * @param {"info"|"danger"|"warning"} [props.variant="info"] - Theme styling variant.
+ * @returns {React.ReactElement} The rendered PredictionCard.
+ */
 export default React.memo(function PredictionCard({
   location,
   badgeText,
